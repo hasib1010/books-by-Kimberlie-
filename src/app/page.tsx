@@ -55,9 +55,24 @@ const reasons = [
 ];
 
 const testimonials = [
-  { text: "Kimberlie brought clarity to my chaotic finances — now I actually enjoy reviewing my numbers each month.", name: "Alex M.", role: "Contractor, Vermont", stars: 5 },
-  { text: "He made my accounting stress completely disappear. Highly professional and genuinely easy to work with.", name: "Sarah T.", role: "Freelance Designer", stars: 5 },
-  { text: "Finally a bookkeeper who explains things in plain English. I feel confident about my finances for the first time.", name: "David R.", role: "Restaurant Owner", stars: 5 },
+  {
+    text: "Kimberlie brought clarity to my chaotic finances — now I actually enjoy reviewing my numbers each month.",
+    name: "Alex M.",
+    role: "Contractor, Vermont",
+    stars: 5
+  },
+  {
+    text: "He made my accounting stress completely disappear. Highly professional and genuinely easy to work with.",
+    name: "Sarah T.",
+    role: "Freelance Designer",
+    stars: 5
+  },
+  {
+    text: "Finally a bookkeeper who explains things in plain English. I feel confident about my finances for the first time.",
+    name: "David R.",
+    role: "Restaurant Owner",
+    stars: 5
+  },
 ];
 
 const steps = [
@@ -98,6 +113,7 @@ export default function Page() {
   useEffect(() => {
     document.body.style.overflow = drawerOpen ? "hidden" : "";
   }, [drawerOpen]);
+  
   const submitNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
     setNlSubmitting(true);
@@ -125,6 +141,7 @@ export default function Page() {
       setNlSubmitting(false);
     }
   };
+  
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -219,7 +236,7 @@ export default function Page() {
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="c-avatar" style={{ zIndex: 3 - i, marginLeft: i > 0 ? -14 : 0 }}>
                     <Image
-                      src={`/client${i + 1}.jpg`}  // dynamic image source
+                      src={`/client${i + 1}.jpg`}
                       alt="client"
                       fill
                       style={{ objectFit: "cover", borderRadius: "50%" }}
@@ -316,7 +333,7 @@ export default function Page() {
           <motion.div variants={fadeLeft} className="about-text">
             <div className="eyebrow">Meet Your Bookkeeper</div>
             <h2 className="s-title cormorant">
-              Hi, I'm Kimberlie —<br />
+              Hi, I am Kimberlie —<br />
               <em className="rose-italic">your financial calm</em><br />
               in the storm.
             </h2>
@@ -349,7 +366,7 @@ export default function Page() {
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="c-avatar" style={{ zIndex: 3 - i, marginLeft: i > 0 ? -14 : 0 }}>
                     <Image
-                      src={`/client${i + 1}.jpg`}  // dynamic image source
+                      src={`/client${i + 1}.jpg`}
                       alt="client"
                       fill
                       style={{ objectFit: "cover", borderRadius: "50%" }}
@@ -418,7 +435,7 @@ export default function Page() {
                   <div className="svc-accent-bar" style={{ background: s.accent }} />
                   <h3 className="svc-title cormorant">{s.title}</h3>
                   <p className="svc-desc">{s.desc}</p>
-                 <Link href="#contact" className="svc-cta"> <div className="svc-more" style={{ color: s.accent }}>Learn more <ArrowRight size={13} /></div></Link>
+                  <Link href="#contact" className="svc-cta"> <div className="svc-more" style={{ color: s.accent }}>Learn more <ArrowRight size={13} /></div></Link>
                 </div>
               </motion.div>
             ))}
@@ -464,17 +481,17 @@ export default function Page() {
           <div className="testi-grid">
             {testimonials.map((t, i) => (
               <motion.div key={i} variants={fadeUp} custom={i} className="testi-card">
-                <div className="testi-qmark cormorant">"</div>
+                <div className="testi-qmark cormorant">&quot;</div>
                 <div className="testi-stars">
                   {[...Array(t.stars)].map((_, j) => (
                     <Star key={j} size={14} fill="#C9964A" color="#C9964A" />
                   ))}
                 </div>
-                <p className="testi-text">"{t.text}"</p>
+                <p className="testi-text">&quot;{t.text}&quot;</p>
                 <div className="testi-author">
                   <div className="testi-avatar">
                     <Image
-                      src={`/client${i + 1}.jpg`}  // client1.jpg, client2.jpg, client3.jpg
+                      src={`/client${i + 1}.jpg`}
                       alt={t.name}
                       fill
                       style={{ objectFit: "cover", borderRadius: "50%" }}
@@ -498,9 +515,9 @@ export default function Page() {
 
           <motion.div variants={fadeLeft} className="contact-left">
             <div className="eyebrow" style={{ color: "#D4614A" }}>Get In Touch</div>
-            <h2 className="s-title cormorant">Let's simplify your<br /><em className="rose-italic">books together</em></h2>
+            <h2 className="s-title cormorant">Let&apos;s simplify your<br /><em className="rose-italic">books together</em></h2>
             <p className="body-text">
-              Ready to go from chaos to calm? I'll get back to you within 24 hours — no jargon, no pressure, just a friendly conversation about your finances.
+              Ready to go from chaos to calm? I&apos;ll get back to you within 24 hours — no jargon, no pressure, just a friendly conversation about your finances.
             </p>
             {/* contact-photo.png as a card */}
             <div className="contact-img-card">
@@ -538,8 +555,8 @@ export default function Page() {
                 </div>
                 <h3 className="cormorant c-success-title">Message sent!</h3>
                 <p className="c-success-body">
-                  Thanks for reaching out. I'll get back to you within 24 hours.
-                  Check your inbox — I've sent you a confirmation email.
+                  Thanks for reaching out. I&apos;ll get back to you within 24 hours.
+                  Check your inbox — I&apos;ve sent you a confirmation email.
                 </p>
                 <div className="c-success-details">
                   <div className="csd-row"><Phone size={15} color="#D4614A" /><span>830-515-9818</span></div>
@@ -590,7 +607,7 @@ export default function Page() {
                 <div className="c-fg">
                   <label className="c-label">Tell me about your business</label>
                   <textarea
-                    placeholder="I'm a contractor and I need help with..."
+                    placeholder="I&apos;m a contractor and I need help with..."
                     value={message}
                     onChange={e => { setMessage(e.target.value); setFieldErrors(p => ({ ...p, message: "" })); }}
                     className={`c-textarea ${fieldErrors.message ? "c-input-error" : ""}`}
