@@ -31,11 +31,11 @@ const config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: {
-          DEFAULT: "#91C6AD",
+          DEFAULT: "rgb(201, 108, 116)",
           foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "#C46A73",
+          DEFAULT: "#3fa27a",
           foreground: "#ffffff",
         },
         destructive: {
@@ -82,11 +82,16 @@ const config = {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "rotate-bg": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "coin-fall": "coin-fall linear infinite",
         float: "float 3s ease-in-out infinite",
         "fade-in": "fade-in 0.8s ease-out forwards",
+        "rotate-bg": "rotate-bg 20s linear infinite",
       },
     },
   },
