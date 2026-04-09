@@ -135,6 +135,19 @@ export async function POST(req: NextRequest) {
               <p style="margin:0;font-size:15px;color:#0D0D0D;">booksbykimberlie.com</p>
             </td></tr>
           </table>
+          
+          <!-- ✅ NEW BUTTON SECTION -->
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 32px;">
+            <tr>
+              <td align="center">
+                <a href="https://docs.google.com/spreadsheets/d/1vmC0ZmxQCmsSwhvT_ezN70kYu69j9DoPS3qWWaIcbDE/edit?usp=sharing" 
+                   style="display: inline-block; background: #D4614A; color: #ffffff; font-size: 14px; font-weight: 500; text-decoration: none; padding: 12px 28px; border-radius: 100px; font-family: Arial, sans-serif; transition: background 0.2s;">
+                  📊 View Subscribers Sheet
+                </a>
+              </td>
+            </tr>
+          </table>
+          
           <p style="margin:24px 0 0;font-size:13px;color:rgba(13,13,13,0.4);">
             This subscriber has been saved to your Google Sheet automatically.
           </p>
