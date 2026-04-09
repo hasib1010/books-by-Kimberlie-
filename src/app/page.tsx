@@ -8,6 +8,7 @@ import {
   BarChart3, Star, ChevronDown, Mail, Phone, MessageCircle,
   Instagram, Facebook, Twitter, Sparkles,
 } from "lucide-react";
+import Link from "next/link";
 
 /* ─── Variants ─── */
 const fadeUp: Variants = {
@@ -55,7 +56,7 @@ const reasons = [
 
 const testimonials = [
   { text: "Kimberlie brought clarity to my chaotic finances — now I actually enjoy reviewing my numbers each month.", name: "Alex M.", role: "Contractor, Vermont", stars: 5 },
-  { text: "She made my accounting stress completely disappear. Highly professional and genuinely easy to work with.", name: "Sarah T.", role: "Freelance Designer", stars: 5 },
+  { text: "He made my accounting stress completely disappear. Highly professional and genuinely easy to work with.", name: "Sarah T.", role: "Freelance Designer", stars: 5 },
   { text: "Finally a bookkeeper who explains things in plain English. I feel confident about my finances for the first time.", name: "David R.", role: "Restaurant Owner", stars: 5 },
 ];
 
@@ -154,7 +155,7 @@ export default function Page() {
     <div className="site-root">
 
       {/* ── MOBILE DRAWER ── */}
-      <div className={`nav-drawer ${drawerOpen ? "open" : ""}`}>
+      <div className={` nav-drawer ${drawerOpen ? "open" : ""}`}>
         <div className="drawer-top">
           <Image src="/logo.png" alt="Books by Kimberlie" width={130} height={46} style={{ filter: "brightness(0) invert(1)", objectFit: "contain" }} />
           <button className="drawer-close" onClick={() => setDrawerOpen(false)}>×</button>
@@ -214,11 +215,18 @@ export default function Page() {
           <motion.div className="hero-social-proof"
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }}>
             <div className="hsp-avatars">
-              {["A", "S", "D"].map((l, i) => (
-                <div key={i} className="hsp-av" style={{ marginLeft: i > 0 ? -10 : 0 }}>
-                  <Image src="/clients-photo.png" alt="client" fill style={{ objectFit: "cover", borderRadius: "50%" }} />
-                </div>
-              ))}
+              <div className="client-avatars">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="c-avatar" style={{ zIndex: 3 - i, marginLeft: i > 0 ? -14 : 0 }}>
+                    <Image
+                      src={`/client${i + 1}.jpg`}  // dynamic image source
+                      alt="client"
+                      fill
+                      style={{ objectFit: "cover", borderRadius: "50%" }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="hsp-text">
               <div style={{ display: "flex", gap: 2, marginBottom: 3 }}>
@@ -328,7 +336,7 @@ export default function Page() {
           {/* Right: photo */}
           <motion.div variants={fadeRight} className="about-photo-col">
             <div className="about-photo-frame">
-              <Image src="/contact-photo.png" alt="Kimberlie Gerstner" fill style={{ objectFit: "cover", objectPosition: "top" }} />
+              <Image src="/hero2.jpg" alt="Kimberlie Gerstner" fill style={{ objectFit: "contain", objectPosition: "center" }} />
               <div className="about-photo-grad" />
               <div className="exp-badge">
                 <span className="exp-num cormorant">15+</span>
@@ -340,7 +348,12 @@ export default function Page() {
               <div className="client-avatars">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="c-avatar" style={{ zIndex: 3 - i, marginLeft: i > 0 ? -14 : 0 }}>
-                    <Image src="/clients-photo.png" alt="client" fill style={{ objectFit: "cover", borderRadius: "50%" }} />
+                    <Image
+                      src={`/client${i + 1}.jpg`}  // dynamic image source
+                      alt="client"
+                      fill
+                      style={{ objectFit: "cover", borderRadius: "50%" }}
+                    />
                   </div>
                 ))}
               </div>
@@ -393,7 +406,7 @@ export default function Page() {
               <motion.div key={s.title} variants={fadeUp} custom={i} className="svc-card">
                 {/* Full bleed image top */}
                 <div className="svc-img-wrap">
-                  <Image src={s.image} alt={s.title} fill style={{ objectFit: "cover" }} />
+                  <Image src={s.image} alt={s.title} fill style={{ objectFit: "contain" }} />
                   <div className="svc-img-scrim" />
                   <div className="svc-icon-pill" style={{ background: s.accent }}>
                     <s.icon size={18} color="#fff" />
@@ -405,7 +418,7 @@ export default function Page() {
                   <div className="svc-accent-bar" style={{ background: s.accent }} />
                   <h3 className="svc-title cormorant">{s.title}</h3>
                   <p className="svc-desc">{s.desc}</p>
-                  <div className="svc-more" style={{ color: s.accent }}>Learn more <ArrowRight size={13} /></div>
+                 <Link href="#contact" className="svc-cta"> <div className="svc-more" style={{ color: s.accent }}>Learn more <ArrowRight size={13} /></div></Link>
                 </div>
               </motion.div>
             ))}
@@ -452,11 +465,20 @@ export default function Page() {
             {testimonials.map((t, i) => (
               <motion.div key={i} variants={fadeUp} custom={i} className="testi-card">
                 <div className="testi-qmark cormorant">"</div>
-                <div className="testi-stars">{[...Array(t.stars)].map((_, j) => <Star key={j} size={14} fill="#C9964A" color="#C9964A" />)}</div>
+                <div className="testi-stars">
+                  {[...Array(t.stars)].map((_, j) => (
+                    <Star key={j} size={14} fill="#C9964A" color="#C9964A" />
+                  ))}
+                </div>
                 <p className="testi-text">"{t.text}"</p>
                 <div className="testi-author">
                   <div className="testi-avatar">
-                    <Image src="/clients-photo.png" alt={t.name} fill style={{ objectFit: "cover", borderRadius: "50%" }} />
+                    <Image
+                      src={`/client${i + 1}.jpg`}  // client1.jpg, client2.jpg, client3.jpg
+                      alt={t.name}
+                      fill
+                      style={{ objectFit: "cover", borderRadius: "50%" }}
+                    />
                   </div>
                   <div>
                     <div className="testi-name">{t.name}</div>
@@ -482,7 +504,7 @@ export default function Page() {
             </p>
             {/* contact-photo.png as a card */}
             <div className="contact-img-card">
-              <Image src="/contact-photo.png" alt="Kimberlie" fill style={{ objectFit: "cover", objectPosition: "top" }} />
+              <Image src="/contact-photo.png" alt="Kimberlie" fill style={{ objectFit: "contain", objectPosition: "top" }} />
               <div className="cic-overlay" />
               <div className="cic-caption">
                 <span className="cic-name">Kimberlie Gerstner</span>
