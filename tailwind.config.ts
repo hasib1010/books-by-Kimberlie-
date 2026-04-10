@@ -9,11 +9,17 @@ const config: Config = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      sm: "600px",
+      md: "900px",
+      lg: "1100px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
     extend: {
       fontFamily: {
         sans:    ["DM Sans", "sans-serif"],
         display: ["Cormorant Garamond", "serif"],
-        heading: ["Cormorant Garamond", "serif"],
       },
       colors: {
         rose:  { DEFAULT: "#D4614A", light: "#F5E6E2", dark: "#A8402C" },
@@ -22,19 +28,9 @@ const config: Config = {
         ink:   "#0D0D0D",
         cream: "#FAF7F0",
         mist:  "#F2EFE8",
-        primary:   { DEFAULT: "var(--rose)",   foreground: "#fff" },
-        secondary: { DEFAULT: "var(--teal)",   foreground: "#fff" },
-        background: "var(--cream)",
-        foreground: "var(--ink)",
-        border: "rgba(13,13,13,0.1)",
-        input:  "rgba(13,13,13,0.08)",
-        ring:   "var(--rose)",
-        muted: { DEFAULT: "var(--mist)", foreground: "rgba(13,13,13,0.5)" },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        "4xl": "2rem",
       },
       animation: {
         "float":     "float 4s ease-in-out infinite",
