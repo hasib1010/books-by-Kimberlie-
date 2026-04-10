@@ -1,32 +1,15 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, Variants } from "framer-motion";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   ArrowRight, CheckCircle2, TrendingUp, Shield, Clock,
-  BarChart3, Star, ChevronDown, Mail, Phone, MessageCircle,
+  BarChart3, Star, Mail, Phone, MessageCircle,
   Instagram, Facebook, Twitter, Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-
-/* ─── Variants ─── */
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 36 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] } },
-};
-const fadeLeft: Variants = {
-  hidden: { opacity: 0, x: -48 },
-  show: { opacity: 1, x: 0, transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] } },
-};
-const fadeRight: Variants = {
-  hidden: { opacity: 0, x: 48 },
-  show: { opacity: 1, x: 0, transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] } },
-};
-const stagger: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.13 } },
-};
+import { CoinRain } from "@/components/CoinRain";
+import { AboutLottieBg } from "@/components/AboutLottieBg";
 
 /* ─── Data ─── */
 const services = [
@@ -49,7 +32,7 @@ const services = [
 
 const reasons = [
   { icon: Shield, title: "Stress-Free Compliance", desc: "GAAP-compliant records and audit-ready books — no more scrambling at tax time." },
-  { icon: Clock, title: "Time-Saving Automation", desc: "Streamlined AP/AR workflows that cut your admin time in half." },
+  { icon: MessageCircle, title: "Plain-English Support", desc: "Questions answered in language you understand — with quick, personal replies when you need them." },
   { icon: TrendingUp, title: "Growth-Focused Insights", desc: "Cash flow forecasts and job costing to help you bid smarter and scale." },
   { icon: Sparkles, title: "Tailored Just For You", desc: "Custom QuickBooks setups and reporting to match exactly how you operate." },
 ];
@@ -62,7 +45,7 @@ const testimonials = [
     stars: 5
   },
   {
-    text: "He made my accounting stress completely disappear. Highly professional and genuinely easy to work with.",
+    text: "She made my accounting stress completely disappear. Highly professional and genuinely easy to work with.",
     name: "Sarah T.",
     role: "Freelance Designer",
     stars: 5
@@ -82,6 +65,11 @@ const steps = [
   { n: "04", title: "Clear Insights", desc: "Regular reports and proactive advice so you always know exactly where you stand." },
 ];
 
+const tickerItems = [
+  "QuickBooks Setup", "Payroll Processing", "Financial Reports", "Cash Flow Forecasting",
+  "AP/AR Management", "Tax Prep Support", "Remote Bookkeeping", "30+ Years Experience",
+];
+
 /* ─── Component ─── */
 export default function Page() {
   const [name, setName] = useState("");
@@ -99,11 +87,6 @@ export default function Page() {
   const [nlStatus, setNlStatus] = useState<"idle" | "success" | "error">("idle");
   const [nlMessage, setNlMessage] = useState("");
 
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const bannerY = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
-
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", fn);
@@ -113,7 +96,7 @@ export default function Page() {
   useEffect(() => {
     document.body.style.overflow = drawerOpen ? "hidden" : "";
   }, [drawerOpen]);
-  
+
   const submitNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
     setNlSubmitting(true);
@@ -141,7 +124,7 @@ export default function Page() {
       setNlSubmitting(false);
     }
   };
-  
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -174,7 +157,7 @@ export default function Page() {
       {/* ── MOBILE DRAWER ── */}
       <div className={` nav-drawer ${drawerOpen ? "open" : ""}`}>
         <div className="drawer-top">
-          <Image src="/logo.png" alt="Books by Kimberlie" width={130} height={46} style={{ filter: "brightness(0) invert(1)", objectFit: "contain" }} />
+          <Image src="/logo.png" alt="Books by Kimberlie" width={180} height={64} style={{ filter: "brightness(0) invert(1)", objectFit: "contain" }} />
           <button className="drawer-close" onClick={() => setDrawerOpen(false)}>×</button>
         </div>
         <div className="drawer-links">
@@ -188,12 +171,8 @@ export default function Page() {
       </div>
 
       {/* ── NAV ── */}
-      <motion.nav
-        className={`site-nav ${scrolled ? "scrolled" : ""}`}
-        initial={{ y: -24, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <Image src="/logo.png" alt="Books by Kimberlie" width={248} height={120} className="nav-logo" />
+      <nav className={`site-nav ${scrolled ? "scrolled" : ""}`}>
+        <Image src="/logo.png" alt="Books by Kimberlie" width={320} height={155} className="nav-logo" />
         <div className="nav-links">
           {["About", "Services", "Process", "Contact"].map(l => (
             <a key={l} href={`#${l.toLowerCase()}`} className="nav-link">{l}</a>
@@ -203,34 +182,27 @@ export default function Page() {
         <button className="nav-hamburger" onClick={() => setDrawerOpen(true)} aria-label="Open menu">
           <span /><span /><span />
         </button>
-      </motion.nav>
+      </nav>
 
       {/* ── HERO ── */}
-      <section ref={heroRef} id="home" className="hero">
+      <section id="home" className="hero">
 
-        {/* LEFT — dark panel with content */}
-        <motion.div className="hero-left" style={{ opacity: heroOpacity }}>
-          <motion.div className="hero-badge"
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
+        <div className="hero-left">
+          <div className="hero-badge">
             <span className="badge-dot" /> Remote Bookkeeping · Vermont
-          </motion.div>
+          </div>
 
-          <motion.h1 className="hero-h1 cormorant"
-            initial={{ opacity: 0, y: 44 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
+          <h1 className="hero-h1 cormorant">
             From chaos to calm,<br />
             <em className="rose-italic">one ledger</em><br />
             at a time.
-          </motion.h1>
+          </h1>
 
-          <motion.p className="hero-sub"
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.7 }}>
+          <p className="hero-sub">
             Remote bookkeeping for builders, creatives &amp; businesses — so you can focus on growing what you love.
-          </motion.p>
+          </p>
 
-          {/* Social proof */}
-          <motion.div className="hero-social-proof"
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }}>
+          <div className="hero-social-proof">
             <div className="hsp-avatars">
               <div className="client-avatars">
                 {[...Array(3)].map((_, i) => (
@@ -251,116 +223,98 @@ export default function Page() {
               </div>
               <span><strong>200+ clients</strong> trust Kimberlie with their books</span>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div className="hero-btns"
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.65 }}>
+          <div className="hero-btns">
             <a href="#contact" className="btn-rose btn-xl">Get a Free Consultation <ArrowRight size={18} /></a>
             <a href="#services" className="btn-ghost-white btn-xl">See My Services</a>
-          </motion.div>
+          </div>
 
-          {/* Stats strip */}
-          <motion.div className="hero-stats-strip"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.7 }}>
-            {[["15+", "Years Experience"], ["200+", "Happy Clients"], ["100%", "Remote & Flexible"], ["$0", "Hidden Fees"]].map(([v, l]) => (
+          <div className="hero-stats-strip">
+            {[["30+", "Years Experience"], ["200+", "Happy Clients"], ["100%", "Remote & Flexible"], ["$0", "Hidden Fees"]].map(([v, l]) => (
               <div key={l} className="hss-item">
                 <span className="hss-val cormorant">{v}</span>
                 <span className="hss-label">{l}</span>
               </div>
             ))}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
-        {/* RIGHT — coins image with parallax */}
         <div className="hero-right">
-          <motion.div className="hero-bg" style={{ y: bannerY }}>
+          <div className="hero-bg">
             <Image src="/hero.jpg" alt="" fill priority style={{ objectFit: "cover", objectPosition: "center 40%" }} />
+            <CoinRain />
             <div className="hero-overlay" />
             <div className="hero-overlay-warm" />
-          </motion.div>
+          </div>
 
-          {/* Decorative "Live" badge top */}
-          <motion.div className="hero-img-badge"
-            initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1, duration: 0.5 }}>
-            <span className="hib-dot" style={{ animation: "pulse 2s ease-in-out infinite" }} />
+          <div className="hero-img-badge">
+            <span className="hib-dot" />
             <span className="hib-text">Books up to date</span>
-          </motion.div>
+          </div>
 
-          {/* Stats cards bottom-right */}
           <div className="hero-stats-panel">
-            <motion.div className="hsp-card accent-teal"
-              animate={{ y: [-6, 6, -6] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}
-            >
+            <div className="hsp-card accent-teal">
               <div className="hsp-label">Cash Flow · This Month</div>
               <div className="hsp-value">$12,480</div>
               <div className="hsp-sub">↑ 18% vs last month</div>
-            </motion.div>
-            <motion.div className="hsp-card"
-              animate={{ y: [6, -6, 6] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-            >
+            </div>
+            <div className="hsp-card">
               <div className="hsp-label">Books Status</div>
               <div className="hsp-status">✓ Up to Date</div>
-            </motion.div>
+            </div>
           </div>
-
-          {/* Scroll cue */}
-          <motion.div className="scroll-cue" animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity }}>
-            <ChevronDown size={22} />
-          </motion.div>
         </div>
       </section>
 
       {/* TICKER */}
       <div className="ticker-bar">
-        <div className="ticker-track">
-          {[...Array(2)].map((_, r) =>
-            ["QuickBooks Setup", "Payroll Processing", "Financial Reports", "Cash Flow Forecasting",
-              "AP/AR Management", "Tax Prep Support", "Remote Bookkeeping", "15+ Years Experience"].map((t, i) => (
-                <span key={`${r}-${i}`} className="ticker-item"><span className="ticker-dot" />{t}</span>
-              ))
-          )}
+        <div className="ticker-track ticker-track-static">
+          {tickerItems.map((t, i) => (
+            <span key={i} className="ticker-item"><span className="ticker-dot" />{t}</span>
+          ))}
         </div>
       </div>
 
       {/* ABOUT */}
       <section id="about" className="s-about">
-        <motion.div className="about-grid"
-          initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger}>
+        <div className="about-grid">
 
-          {/* Left text */}
-          <motion.div variants={fadeLeft} className="about-text">
-            <div className="eyebrow">Meet Your Bookkeeper</div>
-            <h2 className="s-title cormorant">
-              Hi, I am Kimberlie —<br />
-              <em className="rose-italic">your financial calm</em><br />
-              in the storm.
-            </h2>
-            <p className="body-text">
-              With 15 years of hands-on experience across construction, hospitality, banking, and service industries,
-              I help business owners gain clear control over their finances so they can focus on what they do best — growing their business.
-            </p>
-            <p className="body-text" style={{ marginTop: 14 }}>
-              My expertise spans bookkeeping, AP/AR, billing, financial reporting, budgeting, forecasting,
-              cash flow management, reconciliations, payroll, and process improvement.
-            </p>
-            <a href="#contact" className="btn-rose" style={{ marginTop: 36, display: "inline-flex", alignItems: "center", gap: 8 }}>
-              Book a Free Call <ArrowRight size={16} />
-            </a>
-          </motion.div>
+          <div className="about-text">
+            <div className="about-text-bg-stack" aria-hidden>
+              <AboutLottieBg />
+              <CoinRain layer="about" />
+            </div>
+            <div className="about-text-inner">
+              <div className="eyebrow">Meet Your Bookkeeper</div>
+              <h2 className="s-title cormorant">
+                Hi, I am Kimberlie —<br />
+                <em className="rose-italic">your financial calm</em><br />
+                in the storm.
+              </h2>
+              <p className="body-text">
+                With over 30 years of hands-on experience across construction, hospitality, banking, and service industries,
+                I help business owners gain clear control over their finances so they can focus on what they do best — growing their business.
+              </p>
+              <p className="body-text" style={{ marginTop: 14 }}>
+                My expertise spans bookkeeping, AP/AR, billing, financial reporting, budgeting, forecasting,
+                cash flow management, reconciliations, payroll, and process improvement.
+              </p>
+              <a href="#contact" className="btn-rose" style={{ marginTop: 36, display: "inline-flex", alignItems: "center", gap: 8 }}>
+                Book a Free Call <ArrowRight size={16} />
+              </a>
+            </div>
+          </div>
 
-          {/* Right: photo */}
-          <motion.div variants={fadeRight} className="about-photo-col">
+          <div className="about-photo-col">
             <div className="about-photo-frame">
               <Image src="/hero2.jpg" alt="Kimberlie Gerstner" fill style={{ objectFit: "contain", objectPosition: "center" }} />
               <div className="about-photo-grad" />
               <div className="exp-badge">
-                <span className="exp-num cormorant">15+</span>
+                <span className="exp-num cormorant">30+</span>
                 <span className="exp-text">Years of Experience</span>
               </div>
             </div>
-            {/* clients strip */}
             <div className="client-strip">
               <div className="client-avatars">
                 {[...Array(3)].map((_, i) => (
@@ -379,36 +333,31 @@ export default function Page() {
                 <div className="c-label">Trusted by 200+ business owners</div>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
-        {/* Why choose — dark card */}
-        <motion.div className="why-card"
-          initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
-          <motion.div variants={fadeUp} className="why-header">
+        <div className="why-card">
+          <div className="why-header">
             <div className="eyebrow" style={{ color: "#D4614A" }}>Why Choose Kimberlie?</div>
-            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 15, maxWidth: 380 }}>
-              Four reasons clients keep coming back — and referring their friends.
-            </p>
-          </motion.div>
+          </div>
           <div className="why-grid">
-            {reasons.map((r, i) => (
-              <motion.div key={r.title} variants={fadeUp} custom={i} className="why-item">
+            {reasons.map((r) => (
+              <div key={r.title} className="why-item">
                 <div className="why-icon"><r.icon size={18} color="#D4614A" /></div>
                 <div>
                   <div className="why-title">{r.title}</div>
                   <div className="why-desc">{r.desc}</div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* SERVICES */}
       <section id="services" className="s-services">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
-          <motion.div variants={fadeUp} className="services-hdr">
+        <div>
+          <div className="services-hdr">
             <div>
               <div className="eyebrow" style={{ color: "#1E6B5E" }}>What I Offer</div>
               <h2 className="s-title cormorant">Services built for<br /><em className="rose-italic">builders &amp; creatives</em></h2>
@@ -416,12 +365,11 @@ export default function Page() {
             <p className="body-text" style={{ maxWidth: 320, color: "rgba(13,13,13,0.5)" }}>
               Every service is customized to your business — not a one-size-fits-all template.
             </p>
-          </motion.div>
+          </div>
 
           <div className="svc-grid">
-            {services.map((s, i) => (
-              <motion.div key={s.title} variants={fadeUp} custom={i} className="svc-card">
-                {/* Full bleed image top */}
+            {services.map((s) => (
+              <div key={s.title} className="svc-card">
                 <div className="svc-img-wrap">
                   <Image src={s.image} alt={s.title} fill style={{ objectFit: "contain" }} />
                   <div className="svc-img-scrim" />
@@ -430,57 +378,58 @@ export default function Page() {
                   </div>
                   <span className="svc-ghost-num cormorant">{s.num}</span>
                 </div>
-                {/* Body */}
                 <div className="svc-body">
                   <div className="svc-accent-bar" style={{ background: s.accent }} />
                   <h3 className="svc-title cormorant">{s.title}</h3>
                   <p className="svc-desc">{s.desc}</p>
                   <Link href="#contact" className="svc-cta"> <div className="svc-more" style={{ color: s.accent }}>Learn more <ArrowRight size={13} /></div></Link>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* PROCESS */}
       <section id="process" className="s-process">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
-          <motion.div variants={fadeUp} style={{ textAlign: "center", marginBottom: 72 }}>
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 72 }}>
             <div className="eyebrow" style={{ color: "#D4614A", textAlign: "center" }}>The Process</div>
             <h2 className="s-title cormorant" style={{ textAlign: "center" }}>Simple from <em className="rose-italic">start to finish</em></h2>
-          </motion.div>
+          </div>
           <div className="steps-grid">
             <div className="steps-connector" />
             {steps.map((s, i) => (
-              <motion.div key={s.n} variants={fadeUp} custom={i} className="step">
+              <div key={s.n} className="step">
                 <div className={`step-circle ${i === 0 ? "active" : ""}`}>
                   <span className="cormorant step-n">{s.n}</span>
                 </div>
                 <h4 className="step-title">{s.title}</h4>
                 <p className="step-desc">{s.desc}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* TESTIMONIALS */}
       <section className="s-testi">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
-          <motion.div variants={fadeUp} className="testi-hdr">
+        <div>
+          <div className="testi-hdr">
             <div>
               <div className="eyebrow" style={{ color: "#D4614A" }}>Client Stories</div>
-              <h2 className="s-title cormorant" style={{ color: "#fff" }}>What clients<br /><em style={{ color: "#D4614A" }}>are saying</em></h2>
+              <h2 className="s-title cormorant testi-headline" style={{ color: "#fff" }}>
+                What clients <em style={{ color: "#D4614A" }}>are saying</em>
+              </h2>
             </div>
             <div className="testi-rating">
               {[...Array(5)].map((_, i) => <Star key={i} size={20} fill="#C9964A" color="#C9964A" />)}
               <span className="testi-avg">5.0 average</span>
             </div>
-          </motion.div>
+          </div>
           <div className="testi-grid">
             {testimonials.map((t, i) => (
-              <motion.div key={i} variants={fadeUp} custom={i} className="testi-card">
+              <div key={i} className="testi-card">
                 <div className="testi-qmark cormorant">&quot;</div>
                 <div className="testi-stars">
                   {[...Array(t.stars)].map((_, j) => (
@@ -502,24 +451,22 @@ export default function Page() {
                     <div className="testi-role">{t.role}</div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* CONTACT */}
       <section id="contact" className="s-contact">
-        <motion.div className="contact-grid"
-          initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
+        <div className="contact-grid">
 
-          <motion.div variants={fadeLeft} className="contact-left">
+          <div className="contact-left">
             <div className="eyebrow" style={{ color: "#D4614A" }}>Get In Touch</div>
             <h2 className="s-title cormorant">Let&apos;s simplify your<br /><em className="rose-italic">books together</em></h2>
             <p className="body-text">
-              Ready to go from chaos to calm? I&apos;ll get back to you within 24 hours — no jargon, no pressure, just a friendly conversation about your finances.
+              Ready to go from chaos to calm? I&apos;ll get back to you quickly — no jargon, no pressure, just a friendly conversation about your finances.
             </p>
-            {/* contact-photo.png as a card */}
             <div className="contact-img-card">
               <Image src="/contact-photo.png" alt="Kimberlie" fill style={{ objectFit: "contain", objectPosition: "top" }} />
               <div className="cic-overlay" />
@@ -544,18 +491,17 @@ export default function Page() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div variants={fadeRight}>
+          <div>
             {submitted ? (
-              /* ── Success state ── */
               <div className="c-form c-success">
                 <div className="c-success-icon">
                   <CheckCircle2 size={40} color="#1E6B5E" />
                 </div>
                 <h3 className="cormorant c-success-title">Message sent!</h3>
                 <p className="c-success-body">
-                  Thanks for reaching out. I&apos;ll get back to you within 24 hours.
+                  Thanks for reaching out. I&apos;ll get back to you quickly.
                   Check your inbox — I&apos;ve sent you a confirmation email.
                 </p>
                 <div className="c-success-details">
@@ -568,9 +514,7 @@ export default function Page() {
                 </button>
               </div>
             ) : (
-              /* ── Form ── */
               <form onSubmit={submit} className="c-form" noValidate>
-                {/* Global error banner */}
                 {formError && (
                   <div className="c-error-banner">
                     <span style={{ flexShrink: 0 }}>⚠</span>
@@ -631,12 +575,12 @@ export default function Page() {
 
                 <p className="c-note">
                   <CheckCircle2 size={13} style={{ display: "inline", marginRight: 5, verticalAlign: "middle" }} />
-                  I respond within 24 hours · No spam, ever.
+                  Quick replies · No spam, ever.
                 </p>
               </form>
             )}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* NEWSLETTER */}
@@ -683,7 +627,7 @@ export default function Page() {
       <footer className="site-footer">
         <div className="footer-top">
           <div className="footer-brand">
-            <Image src="/logo.png" alt="Books by Kimberlie" width={140} height={50} style={{ objectFit: "contain" }} />
+            <Image src="/logo.png" alt="Books by Kimberlie" width={200} height={72} style={{ objectFit: "contain" }} />
             <p className="footer-tagline">Remote bookkeeping for builders, creatives &amp; businesses. From chaos to calm, one ledger at a time.</p>
             <div className="footer-socials">
               {[Facebook, Instagram, Twitter].map((Icon, i) => (

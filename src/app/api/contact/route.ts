@@ -248,8 +248,8 @@ function buildAutoReplyEmail(
               Hi ${name}, thanks for reaching out! 👋
             </h2>
             <p style="margin:0 0 20px;font-size:16px;color:rgba(13,13,13,0.65);line-height:1.75;">
-              I've received your message and will get back to you within
-              <strong style="color:#0D0D0D;">24 hours</strong>.
+              I've received your message and will get back to you
+              <strong style="color:#0D0D0D;">quickly</strong>.
               In the meantime, feel free to reach me directly:
             </p>
 
@@ -312,7 +312,7 @@ function buildAutoReplyEmail(
   </table>
 </body>
 </html>`,
-    text: `Hi ${name},\n\nThanks for reaching out! I'll get back to you within 24 hours.\n\n📞 Mobile: 830-515-9818\n📞 Office: 830-730-4160\n✉️ kimberlie@booksbykimberlie.com\n\nWarm regards,\nKimberlie Gerstner\nBooks by Kimberlie`,
+    text: `Hi ${name},\n\nThanks for reaching out! I'll get back to you quickly.\n\n📞 Mobile: 830-515-9818\n📞 Office: 830-730-4160\n✉️ kimberlie@booksbykimberlie.com\n\nWarm regards,\nKimberlie Gerstner\nBooks by Kimberlie`,
   };
 }
 
@@ -381,7 +381,7 @@ export async function POST(req: NextRequest) {
     console.log(`[contact] ✓ Message from ${email} at ${new Date().toISOString()}`);
 
     return NextResponse.json(
-      { success: true, message: "Your message has been sent! I'll be in touch within 24 hours." },
+      { success: true, message: "Your message has been sent! I'll be in touch quickly." },
       { status: 200 }
     );
 
