@@ -5,9 +5,50 @@ import Image from "next/image";
 import {
   ArrowRight, CheckCircle2, TrendingUp, Shield, Clock,
   BarChart3, Star, Mail, Phone, MessageCircle,
-  Instagram, Facebook, Twitter, Sparkles,
+  Instagram, Facebook, Twitter, Sparkles, ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
+
+type Variants = Record<string, unknown>;
+type StaticMotionProps<T extends keyof JSX.IntrinsicElements> = JSX.IntrinsicElements[T] & {
+  initial?: unknown;
+  animate?: unknown;
+  transition?: unknown;
+  whileInView?: unknown;
+  variants?: unknown;
+  viewport?: unknown;
+  custom?: unknown;
+};
+
+function staticMotionTag<T extends keyof JSX.IntrinsicElements>(tag: T) {
+  return function StaticMotionElement(props: StaticMotionProps<T>) {
+    const {
+      initial,
+      animate,
+      transition,
+      whileInView,
+      variants,
+      viewport,
+      custom,
+      ...rest
+    } = props;
+    void initial;
+    void animate;
+    void transition;
+    void whileInView;
+    void variants;
+    void viewport;
+    void custom;
+    return React.createElement(tag, rest);
+  };
+}
+
+const motion = {
+  div: staticMotionTag("div"),
+  nav: staticMotionTag("nav"),
+  h1: staticMotionTag("h1"),
+  p: staticMotionTag("p"),
+};
 
 /* ─── Animation variants ─── */
 const fadeUp: Variants = {
@@ -43,7 +84,7 @@ const reasons = [
 
 const testimonials = [
   { text: "Kimberlie brought clarity to my chaotic finances — now I actually enjoy reviewing my numbers each month.", name: "Alex M.",   role: "Contractor, Vermont",  stars: 5 },
-  { text: "He made my accounting stress completely disappear. Highly professional and genuinely easy to work with.",  name: "Sarah T.", role: "Freelance Designer",   stars: 5 },
+  { text: "She made my accounting stress completely disappear. Highly professional and genuinely easy to work with.",  name: "Sarah T.", role: "Freelance Designer",   stars: 5 },
   { text: "Finally a bookkeeper who explains things in plain English. I feel confident about my finances for the first time.", name: "David R.", role: "Restaurant Owner", stars: 5 },
 ];
 
@@ -52,6 +93,16 @@ const steps = [
   { n: "02", title: "Custom Setup",      desc: "I tailor QuickBooks, workflows, and reporting to match exactly how you operate." },
   { n: "03", title: "Ongoing Support",   desc: "Monthly bookkeeping, payroll, and reconciliations — delivered on time, every time." },
   { n: "04", title: "Clear Insights",    desc: "Regular reports and proactive advice so you always know exactly where you stand." },
+];
+const tickerItems = [
+  "QuickBooks Setup",
+  "Payroll Processing",
+  "Financial Reports",
+  "Cash Flow Forecasting",
+  "AP/AR Management",
+  "Tax Prep Support",
+  "Remote Bookkeeping",
+  "30+ Years Experience",
 ];
 
 const navLinks = ["About", "Services", "Process", "Contact"];
@@ -77,10 +128,7 @@ export default function Page() {
   const [nlStatus, setNlStatus]         = useState<"idle" | "success" | "error">("idle");
   const [nlMessage, setNlMessage]       = useState("");
 
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const bannerY      = useTransform(scrollYProgress, [0, 1],    ["0%", "28%"]);
-  const heroOpacity  = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+  const heroOpacity = 1;
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 50);
@@ -150,8 +198,8 @@ export default function Page() {
         }`}
         initial={{ y: -24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }}
       >
-        <Image src="/logo.png" alt="Books by Kimberlie" width={248} height={120}
-          className="h-[100px] w-auto object-contain transition-all duration-300"
+        <Image src="/logo.png" alt="Books by Kimberlie" width={320} height={160}
+          className="h-[120px] w-auto object-contain transition-all duration-300"
           style={{ filter: scrolled ? "none" : "brightness(0) invert(1)" }} />
 
         <div className="hidden md:flex items-center gap-8">
@@ -172,10 +220,10 @@ export default function Page() {
             <span key={i} className={`block w-6 h-0.5 rounded-sm transition-colors ${scrolled ? "bg-ink" : "bg-white"}`} />
           ))}
         </button>
-      </nav>
+      </motion.nav>
 
       {/* ── HERO ── */}
-      <section ref={heroRef} id="home" className="relative min-h-screen grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+      <section id="home" className="relative min-h-screen grid grid-cols-1 md:grid-cols-2 overflow-hidden">
 
         {/* LEFT — dark panel with content */}
         <motion.div
@@ -198,14 +246,14 @@ export default function Page() {
             From chaos to calm,<br />
             <em className="text-rose italic">one ledger</em><br />
             at a time.
-          </h1>
+          </motion.h1>
 
           {/* Subtext */}
           <motion.p
             className="text-[17px] text-white/50 leading-[1.8] mb-10 max-w-[440px] relative z-[1]"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.7 }}>
             Remote bookkeeping for builders, creatives &amp; businesses — so you can focus on growing what you love.
-          </p>
+          </motion.p>
 
           {/* Social proof */}
           <motion.div
@@ -225,7 +273,7 @@ export default function Page() {
               </div>
               <span><strong className="text-white/80 font-medium">200+ clients</strong> trust Kimberlie with their books</span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Buttons */}
           <motion.div
@@ -233,24 +281,24 @@ export default function Page() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.65 }}>
             <a href="#contact" className="btn-rose btn-xl">Get a Free Consultation <ArrowRight size={18} /></a>
             <a href="#services" className="btn-ghost-white btn-xl">See My Services</a>
-          </div>
+          </motion.div>
 
           {/* Stats strip */}
           <motion.div
             className="grid grid-cols-4 relative z-[1] border-t border-white/[.08] pt-8"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.7 }}>
-            {[["15+", "Years Experience"], ["200+", "Happy Clients"], ["100%", "Remote & Flexible"], ["$0", "Hidden Fees"]].map(([v, l], i) => (
+            {[["30+", "Years Experience"], ["200+", "Happy Clients"], ["100%", "Remote & Flexible"], ["$0", "Hidden Fees"]].map(([v, l], i) => (
               <div key={l} className={`flex flex-col gap-1 ${i < 3 ? "pr-5 border-r border-white/[.06]" : "pl-5"} ${i > 0 && i < 3 ? "pl-5" : ""}`}>
                 <span className="font-display text-[30px] text-white font-semibold leading-none">{v}</span>
                 <span className="text-[11px] text-white/35">{l}</span>
               </div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* RIGHT — image with parallax */}
         <div className="relative overflow-hidden max-md:absolute max-md:inset-0 max-md:z-0">
-          <motion.div className="absolute inset-[-12%] will-change-transform" style={{ y: bannerY }}>
+          <motion.div className="absolute inset-[-12%] will-change-transform">
             <Image src="/hero.jpg" alt="" fill priority style={{ objectFit: "cover", objectPosition: "center 40%" }} />
             <div className="absolute inset-0 bg-gradient-to-br from-ink/65 via-ink/30 to-ink/10 max-md:from-ink/80 max-md:via-ink/70 max-md:to-ink/85" />
             <div className="absolute inset-0 bg-gradient-to-b from-[rgba(201,150,74,0.08)] via-transparent to-[rgba(30,107,94,0.12)]" />
@@ -260,7 +308,7 @@ export default function Page() {
           <motion.div
             className="absolute top-[10%] left-[8%] z-10 bg-rose/85 backdrop-blur-xl rounded-xl px-[18px] py-3 items-center gap-2.5 hidden md:flex"
             initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1, duration: 0.5 }}>
-            <span className="w-2 h-2 rounded-full bg-white/90" style={{ animation: "pulse 2s ease-in-out infinite" }} />
+            <span className="w-2 h-2 rounded-full bg-white/90" />
             <span className="text-[13px] text-white font-medium tracking-[.02em]">Books up to date</span>
           </motion.div>
 
@@ -295,8 +343,7 @@ export default function Page() {
       <div className="bg-ink py-[17px] overflow-hidden">
         <div className="ticker-track">
           {[...Array(2)].map((_, r) =>
-            ["QuickBooks Setup", "Payroll Processing", "Financial Reports", "Cash Flow Forecasting",
-              "AP/AR Management", "Tax Prep Support", "Remote Bookkeeping", "15+ Years Experience"].map((t, i) => (
+            tickerItems.map((t, i) => (
                 <span key={`${r}-${i}`} className="inline-flex items-center gap-2.5 pr-10 text-xs font-medium tracking-[.12em] uppercase text-white/45 whitespace-nowrap">
                   <span className="w-1 h-1 rounded-full bg-rose flex-shrink-0" />{t}
                 </span>
@@ -319,7 +366,7 @@ export default function Page() {
               in the storm.
             </h2>
             <p className="text-base text-ink/[.58] leading-[1.85]">
-              With 15 years of hands-on experience across construction, hospitality, banking, and service industries,
+              With 30+ years of hands-on experience across construction, hospitality, banking, and service industries,
               I help business owners gain clear control over their finances so they can focus on what they do best — growing their business.
             </p>
             <p className="text-base text-ink/[.58] leading-[1.85] mt-3.5">
@@ -335,7 +382,7 @@ export default function Page() {
               <Image src="/hero2.jpg" alt="Kimberlie Gerstner" fill style={{ objectFit: "contain", objectPosition: "center" }} />
               <div className="absolute inset-0 bg-gradient-to-t from-ink/55 to-transparent" />
               <div className="absolute bottom-6 left-6 bg-rose rounded-2xl p-[14px_20px] text-white flex flex-col gap-0.5">
-                <span className="font-display text-[30px] font-semibold leading-none">15+</span>
+                <span className="font-display text-[30px] font-semibold leading-none">30+</span>
                 <span className="text-[11px] opacity-85 tracking-[.04em]">Years of Experience</span>
               </div>
             </div>
@@ -354,8 +401,8 @@ export default function Page() {
                 <div className="text-[13px] text-ink/55">Trusted by 200+ business owners</div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Why card */}
         <motion.div className="bg-ink rounded-[28px] p-[52px]"
@@ -376,10 +423,10 @@ export default function Page() {
                   <div className="text-[15px] font-medium text-white mb-[5px]">{r.title}</div>
                   <div className="text-[13px] text-white/[.42] leading-[1.65]">{r.desc}</div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ── SERVICES ── */}
@@ -395,7 +442,7 @@ export default function Page() {
             <p className="text-base text-ink/50 max-w-[320px]">
               Every service is customized to your business — not a one-size-fits-all template.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {services.map((s, i) => (
@@ -419,10 +466,10 @@ export default function Page() {
                     Learn more <ArrowRight size={13} />
                   </Link>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ── PROCESS ── */}
@@ -451,7 +498,7 @@ export default function Page() {
               </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ── TESTIMONIALS ── */}
@@ -488,10 +535,10 @@ export default function Page() {
                     <div className="text-xs text-white/35">{t.role}</div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ── CONTACT ── */}
@@ -506,7 +553,7 @@ export default function Page() {
               Let&apos;s simplify your<br /><em className="text-rose italic">books together</em>
             </h2>
             <p className="text-base text-ink/[.58] leading-[1.85]">
-              Ready to go from chaos to calm? I&apos;ll get back to you within 24 hours — no jargon, no pressure, just a friendly conversation about your finances.
+              Ready to go from chaos to calm? I&apos;ll get back to you quickly — no jargon, no pressure, just a friendly conversation about your finances.
             </p>
 
             {/* Photo card */}
@@ -538,7 +585,7 @@ export default function Page() {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Right — form */}
           <motion.div variants={fadeRight}>
@@ -549,7 +596,7 @@ export default function Page() {
                 </div>
                 <h3 className="font-display text-[32px] font-normal text-ink mb-3">Message sent!</h3>
                 <p className="text-[15px] text-ink/[.58] leading-[1.8] max-w-[360px] mb-7">
-                  Thanks for reaching out. I&apos;ll get back to you within 24 hours.
+                  Thanks for reaching out. I&apos;ll get back to you quickly.
                   Check your inbox — I&apos;ve sent you a confirmation email.
                 </p>
                 <div className="flex flex-col gap-2.5 bg-mist rounded-xl p-4 px-6 w-full mb-1">
@@ -605,12 +652,12 @@ export default function Page() {
 
                 <p className="text-center text-[13px] text-ink/35 mt-3.5">
                   <CheckCircle2 size={13} className="inline mr-[5px] align-middle" />
-                  I respond within 24 hours · No spam, ever.
+                  Quick responses · No spam, ever.
                 </p>
               </form>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ── NEWSLETTER ── */}
