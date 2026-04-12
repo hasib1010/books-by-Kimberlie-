@@ -1,740 +1,926 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight, CheckCircle2, TrendingUp, Shield, Clock,
   BarChart3, Star, Mail, Phone, MessageCircle,
-  Instagram, Facebook, Twitter, Sparkles, ChevronDown,
+  Instagram, Facebook, Linkedin, Sparkles, ChevronDown, Menu, X,
 } from "lucide-react";
-import Link from "next/link";
 
-type Variants = Record<string, unknown>;
-type StaticMotionProps<T extends keyof JSX.IntrinsicElements> = JSX.IntrinsicElements[T] & {
-  initial?: unknown;
-  animate?: unknown;
-  transition?: unknown;
-  whileInView?: unknown;
-  variants?: unknown;
-  viewport?: unknown;
-  custom?: unknown;
-};
-
-function staticMotionTag<T extends keyof JSX.IntrinsicElements>(tag: T) {
-  return function StaticMotionElement(props: StaticMotionProps<T>) {
-    const {
-      initial,
-      animate,
-      transition,
-      whileInView,
-      variants,
-      viewport,
-      custom,
-      ...rest
-    } = props;
-    void initial;
-    void animate;
-    void transition;
-    void whileInView;
-    void variants;
-    void viewport;
-    void custom;
-    return React.createElement(tag, rest);
-  };
-}
-
-const motion = {
-  div: staticMotionTag("div"),
-  nav: staticMotionTag("nav"),
-  h1: staticMotionTag("h1"),
-  p: staticMotionTag("p"),
-};
-
-/* ─── Animation variants ─── */
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 36 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] } },
-};
-const fadeLeft: Variants = {
-  hidden: { opacity: 0, x: -48 },
-  show:   { opacity: 1, x: 0, transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] } },
-};
-const fadeRight: Variants = {
-  hidden: { opacity: 0, x: 48 },
-  show:   { opacity: 1, x: 0, transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] } },
-};
-const stagger: Variants = {
-  hidden: {},
-  show:   { transition: { staggerChildren: 0.13 } },
-};
-
-/* ─── Static data ─── */
-const services = [
-  { num: "01", title: "QuickBooks",        desc: "Expert setup and ongoing management so your books stay accurate, clean, and always tax-ready.",                        image: "/quickbooks.png", icon: BarChart3,  accent: "#1E6B5E" },
-  { num: "02", title: "Payroll",           desc: "On-time, every time. Smooth payroll runs so your team is always paid correctly and you stay compliant.",              image: "/payroll.png",    icon: Clock,      accent: "#D4614A" },
-  { num: "03", title: "Financial Reports", desc: "Clear, actionable reports that show exactly where your cash is going — and where it should be.",                     image: "/reports.png",    icon: TrendingUp, accent: "#C9964A" },
+/* ────────────────────────────────────────
+   DATA
+──────────────────────────────────────── */
+const SERVICES = [
+  { num:"01", title:"QuickBooks",        img:"/quickbooks.png",  accent:"#C0556A", bg:"#FDF4F6", icon:BarChart3,  desc:"Expert setup and ongoing management so your books stay accurate, clean, and always tax-ready." },
+  { num:"02", title:"Payroll",           img:"/payroll.png",     accent:"#3A9E8F", bg:"#F0F9F7", icon:Clock,      desc:"On-time, every time. Smooth payroll runs so your team gets paid correctly and you stay compliant." },
+  { num:"03", title:"Financial Reports", img:"/reports.png",     accent:"#B07D3A", bg:"#FBF6EE", icon:TrendingUp, desc:"Clear, actionable reports showing exactly where your cash is going — and where it should be." },
 ];
 
-const reasons = [
-  { icon: Shield,    title: "Stress-Free Compliance",   desc: "GAAP-compliant records and audit-ready books — no more scrambling at tax time." },
-  { icon: Clock,     title: "Time-Saving Automation",   desc: "Streamlined AP/AR workflows that cut your admin time in half." },
-  { icon: TrendingUp,title: "Growth-Focused Insights",  desc: "Cash flow forecasts and job costing to help you bid smarter and scale." },
-  { icon: Sparkles,  title: "Tailored Just For You",    desc: "Custom QuickBooks setups and reporting to match exactly how you operate." },
+const WHY = [
+  { icon:Shield,     c:"#C0556A", bg:"#FDF4F6", title:"Stress-Free Compliance",  desc:"GAAP-compliant records and audit-ready books. No more scrambling at tax time." },
+  { icon:Clock,      c:"#3A9E8F", bg:"#F0F9F7", title:"Time-Saving Automation",  desc:"Streamlined AP/AR workflows that cut your admin time dramatically." },
+  { icon:TrendingUp, c:"#B07D3A", bg:"#FBF6EE", title:"Growth-Focused Insights", desc:"Cash flow forecasts and job costing to help you bid smarter and scale." },
+  { icon:Sparkles,   c:"#7E6BA8", bg:"#F5F2FA", title:"Tailored Just For You",   desc:"Custom QuickBooks setups and reporting to match exactly how you operate." },
 ];
 
-const testimonials = [
-  { text: "Kimberlie brought clarity to my chaotic finances — now I actually enjoy reviewing my numbers each month.", name: "Alex M.",   role: "Contractor, Vermont",  stars: 5 },
-  { text: "She made my accounting stress completely disappear. Highly professional and genuinely easy to work with.",  name: "Sarah T.", role: "Freelance Designer",   stars: 5 },
-  { text: "Finally a bookkeeper who explains things in plain English. I feel confident about my finances for the first time.", name: "David R.", role: "Restaurant Owner", stars: 5 },
+const STEPS = [
+  { n:"01", c:"#C0556A", title:"Free Consultation", desc:"We talk through your business, pain points, and what calm finances looks like for you." },
+  { n:"02", c:"#3A9E8F", title:"Custom Setup",       desc:"I tailor QuickBooks, workflows, and reporting to match exactly how you operate." },
+  { n:"03", c:"#B07D3A", title:"Ongoing Support",    desc:"Monthly bookkeeping, payroll, and reconciliations — delivered on time, every time." },
+  { n:"04", c:"#7E6BA8", title:"Clear Insights",     desc:"Regular reports and proactive advice so you always know exactly where you stand." },
 ];
 
-const steps = [
-  { n: "01", title: "Free Consultation", desc: "We talk through your business, pain points, and what calm finances looks like for you." },
-  { n: "02", title: "Custom Setup",      desc: "I tailor QuickBooks, workflows, and reporting to match exactly how you operate." },
-  { n: "03", title: "Ongoing Support",   desc: "Monthly bookkeeping, payroll, and reconciliations — delivered on time, every time." },
-  { n: "04", title: "Clear Insights",    desc: "Regular reports and proactive advice so you always know exactly where you stand." },
-];
-const tickerItems = [
-  "QuickBooks Setup",
-  "Payroll Processing",
-  "Financial Reports",
-  "Cash Flow Forecasting",
-  "AP/AR Management",
-  "Tax Prep Support",
-  "Remote Bookkeeping",
-  "30+ Years Experience",
+const TESTI = [
+  { q:"Kimberlie brought clarity to my chaotic finances — now I actually enjoy reviewing my numbers each month.", name:"Alex M.",   role:"Contractor, Vermont",  img:"/client1.jpg", c:"#C0556A" },
+  { q:"She made my accounting stress completely disappear. Highly professional and genuinely easy to work with.",  name:"Sarah T.", role:"Freelance Designer",   img:"/client2.jpg", c:"#3A9E8F" },
+  { q:"Finally a bookkeeper who explains things in plain English. I feel confident about my finances for the first time.", name:"David R.", role:"Restaurant Owner", img:"/client3.jpg", c:"#B07D3A" },
 ];
 
-const navLinks = ["About", "Services", "Process", "Contact"];
+const TICKER = ["QuickBooks Setup","Payroll Processing","Financial Reports","Cash Flow Forecasting","AP/AR Management","Tax Prep Support","Remote Bookkeeping","30+ Years Experience"];
+const NAV    = ["About","Services","Process","Contact"];
 
-/* ─── Shared class strings ─── */
-const eyebrow = "text-[11px] font-medium tracking-[.15em] uppercase mb-3.5";
-const sectionTitle = "font-display text-[clamp(34px,4vw,52px)] font-normal leading-[1.13]";
-const inputBase = "w-full bg-cream/80 border-[1.5px] rounded-[11px] py-[13px] px-4 font-sans text-[15px] text-ink outline-none transition-colors focus:border-rose";
-
-/* ─── Component ─── */
-export default function Page() {
-  const [name, setName]           = useState("");
-  const [email, setEmail]         = useState("");
-  const [message, setMessage]     = useState("");
-  const [scrolled, setScrolled]   = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted]   = useState(false);
-  const [formError, setFormError]   = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [nlEmail, setNlEmail]         = useState("");
-  const [nlSubmitting, setNlSubmitting] = useState(false);
-  const [nlStatus, setNlStatus]         = useState<"idle" | "success" | "error">("idle");
-  const [nlMessage, setNlMessage]       = useState("");
-
-  const heroOpacity = 1;
+/* ── LOTTIE COIN RAIN ── */
+function GoldCoinShower() {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 50);
+    const el = ref.current;
+    if (!el) return;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let anim: any = null;
+
+    import("lottie-web").then((mod) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const lottie: any = mod.default ?? mod;
+
+      anim = lottie.loadAnimation({
+        container: el,
+        renderer: "svg",
+        loop: true,           // lottie-web native loop
+        autoplay: true,
+        path: "/money_falling.json",
+        rendererSettings: {
+          preserveAspectRatio: "xMidYMid slice",
+          progressiveLoad: false,
+          hideOnTransparent: false,
+        },
+      });
+
+      anim.setSpeed(0.75);
+
+      // Belt-and-suspenders: if animation ever stops, restart it
+      anim.addEventListener("complete", () => {
+        anim.goToAndPlay(0, true);
+      });
+
+      // Keep playing even when tab is in background
+      anim.addEventListener("loopComplete", () => {
+        if (!anim.isPaused) return;
+        anim.goToAndPlay(0, true);
+      });
+    });
+
+    // Also handle page visibility — resume when user comes back
+    const onVisible = () => {
+      if (document.visibilityState === "visible" && anim && anim.isPaused) {
+        anim.play();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      anim?.destroy();
+    };
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+        zIndex: 0,
+        opacity: 0.55,
+      }}
+    />
+  );
+}
+
+
+/* ────────────────────────────────────────
+   PAGE
+──────────────────────────────────────── */
+export default function Page() {
+  const [name,    setName]    = useState("");
+  const [email,   setEmail]   = useState("");
+  const [msg,     setMsg]     = useState("");
+  const [scrolled,setScrolled]= useState(false);
+  const [drawer,  setDrawer]  = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent,    setSent]    = useState(false);
+  const [formErr, setFormErr] = useState<string|null>(null);
+  const [fldErr,  setFldErr]  = useState<Record<string,string>>({});
+  const [nlEmail, setNlEmail] = useState("");
+  const [nlBusy,  setNlBusy]  = useState(false);
+  const [nlOk,    setNlOk]    = useState(false);
+  const [nlErr,   setNlErr]   = useState("");
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", fn);
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = drawerOpen ? "hidden" : "";
-  }, [drawerOpen]);
+    document.body.style.overflow = drawer ? "hidden" : "";
+  }, [drawer]);
 
-  const submitNewsletter = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setNlSubmitting(true); setNlStatus("idle"); setNlMessage("");
+  const sendNl = async (e: React.FormEvent) => {
+    e.preventDefault(); setNlBusy(true); setNlErr("");
     try {
-      const res  = await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: nlEmail }) });
-      const data = await res.json();
-      if (!res.ok) { setNlStatus("error");   setNlMessage(data.message || "Something went wrong."); }
-      else          { setNlStatus("success"); setNlMessage(data.message || "You're subscribed!"); setNlEmail(""); }
-    } catch { setNlStatus("error"); setNlMessage("Network error. Please try again."); }
-    finally  { setNlSubmitting(false); }
+      const r = await fetch("/api/newsletter", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ email: nlEmail }) });
+      const d = await r.json();
+      if (!r.ok) setNlErr(d.message || "Something went wrong.");
+      else { setNlOk(true); setNlEmail(""); }
+    } catch { setNlErr("Network error."); }
+    finally { setNlBusy(false); }
   };
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true); setFormError(null); setFieldErrors({});
+  const sendContact = async (e: React.FormEvent) => {
+    e.preventDefault(); setSending(true); setFormErr(null); setFldErr({});
     try {
-      const res  = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, message }) });
-      const data = await res.json();
-      if (!res.ok) {
-        if (res.status === 422 && data.errors) setFieldErrors(data.errors);
-        else setFormError(data.message || "Something went wrong. Please try again.");
+      const r = await fetch("/api/contact", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ name, email, message: msg }) });
+      const d = await r.json();
+      if (!r.ok) {
+        if (r.status === 422 && d.errors) setFldErr(d.errors);
+        else setFormErr(d.message || "Something went wrong.");
         return;
       }
-      setSubmitted(true); setName(""); setEmail(""); setMessage("");
-    } catch { setFormError("Network error. Please check your connection and try again."); }
-    finally  { setSubmitting(false); }
+      setSent(true); setName(""); setEmail(""); setMsg("");
+    } catch { setFormErr("Network error."); }
+    finally { setSending(false); }
   };
 
+  /* ── shared micro-styles ── */
+  const ROSE   = "#C0556A";
+  const TEAL   = "#3A9E8F";
+  const GOLD   = "#B07D3A";
+  const PLUM   = "#7E6BA8";
+  const IVORY  = "#FFFCF7";
+  const INK    = "#1E1A18";
+  const MIST   = "#F7F3EE";
+
+  const eyebrow = (c=ROSE): React.CSSProperties => ({
+    fontSize:11, fontWeight:600, letterSpacing:".2em",
+    textTransform:"uppercase", color:c, marginBottom:14,
+  });
+
+  const displayTitle = (extra?: React.CSSProperties): React.CSSProperties => ({
+    fontFamily:"'Cormorant Garamond', serif",
+    fontSize:"clamp(32px,3.5vw,52px)",
+    fontWeight:400, lineHeight:1.12,
+    letterSpacing:"-.02em", color:INK,
+    marginBottom:20,
+    ...extra,
+  });
+
+  const body = (extra?: React.CSSProperties): React.CSSProperties => ({
+    fontSize:15, color:"#6B6461", lineHeight:1.9, ...extra,
+  });
+
+  const pill = (c=ROSE): React.CSSProperties => ({
+    display:"inline-flex", alignItems:"center", gap:8,
+    background:`${c}12`, border:`1px solid ${c}35`,
+    borderRadius:50, padding:"7px 16px",
+    fontSize:11, fontWeight:600, letterSpacing:".08em",
+    color:c, width:"fit-content",
+  });
+
+  const primaryBtn = (extra?: React.CSSProperties): React.CSSProperties => ({
+    display:"inline-flex", alignItems:"center", gap:9,
+    background:`linear-gradient(135deg, ${ROSE} 0%, #D4756A 100%)`,
+    color:"white", border:"none", borderRadius:50,
+    padding:"14px 32px", fontSize:14, fontWeight:600,
+    cursor:"pointer", textDecoration:"none",
+    boxShadow:`0 8px 32px ${ROSE}35`,
+    transition:"transform .22s, box-shadow .22s",
+    ...extra,
+  });
+
+  const outlineBtn = (extra?: React.CSSProperties): React.CSSProperties => ({
+    display:"inline-flex", alignItems:"center", gap:8,
+    background:"transparent", color:INK,
+    border:`1.5px solid rgba(30,26,24,.22)`,
+    borderRadius:50, padding:"13px 30px",
+    fontSize:14, fontWeight:500, cursor:"pointer",
+    textDecoration:"none", transition:"all .22s",
+    ...extra,
+  });
+
+  const cardBase = (extra?: React.CSSProperties): React.CSSProperties => ({
+    background:"white",
+    borderRadius:24,
+    border:"1px solid rgba(192,85,106,.1)",
+    boxShadow:"0 4px 32px rgba(30,26,24,.05)",
+    ...extra,
+  });
+
+  const inputStyle = (err?: string): React.CSSProperties => ({
+    width:"100%", background:"#FDFAF7",
+    border:`1.5px solid ${err ? "#e74c3c" : "rgba(192,85,106,.2)"}`,
+    borderRadius:12, padding:"13px 16px",
+    fontSize:14, color:INK, outline:"none",
+    fontFamily:"'Jost', sans-serif",
+    transition:"border-color .2s",
+  });
+
+  const hoverLift = (e: React.MouseEvent<HTMLElement>, in_: boolean) => {
+    e.currentTarget.style.transform = in_ ? "translateY(-4px)" : "translateY(0)";
+    e.currentTarget.style.boxShadow = in_ ? "0 20px 48px rgba(30,26,24,.1)" : "0 4px 32px rgba(30,26,24,.05)";
+  };
+
+  const hoverBtn = (e: React.MouseEvent<HTMLElement>, in_: boolean) => {
+    e.currentTarget.style.transform = in_ ? "translateY(-2px)" : "translateY(0)";
+    e.currentTarget.style.boxShadow = in_ ? `0 16px 40px ${ROSE}45` : `0 8px 32px ${ROSE}35`;
+  };
+
+  const avatarRow = (srcs: string[]) => (
+    <div style={{ display:"flex" }}>
+      {srcs.map((src, i) => (
+        <div key={i} style={{ position:"relative", width:38, height:38, borderRadius:"50%", overflow:"hidden", border:"2.5px solid white", marginLeft:i ? -12 : 0, zIndex:srcs.length-i, flexShrink:0 }}>
+          <Image src={src} alt="" fill style={{ objectFit:"cover", borderRadius:"50%" }} />
+        </div>
+      ))}
+    </div>
+  );
+
+  const starRow = (n=5, sz=13) => (
+    <div style={{ display:"flex", gap:2 }}>
+      {[...Array(n)].map((_, i) => <Star key={i} size={sz} fill="#D4A843" color="#D4A843" />)}
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-cream text-ink overflow-x-hidden font-sans antialiased">
+    <div style={{ minHeight:"100vh", overflowX:"hidden", background:IVORY, color:INK, fontFamily:"'Jost', sans-serif" }}>
 
-      {/* ── MOBILE DRAWER ── */}
-      <div className={`${drawerOpen ? "flex" : "hidden"} fixed inset-0 z-[200] flex-col bg-ink px-[8%] py-7`}>
-        <div className="flex items-center justify-between pb-8 border-b border-white/[.08] mb-8">
-          <Image src="/logo.png" alt="Books by Kimberlie" width={130} height={46}
-            style={{ filter: "brightness(0) invert(1)", objectFit: "contain" }} />
-          <button className="bg-transparent border-none text-white/60 text-3xl cursor-pointer leading-none"
-            onClick={() => setDrawerOpen(false)}>×</button>
+      {/* ── GLOBAL CSS ── */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
+        *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+        html { scroll-behavior:smooth; }
+        body { -webkit-font-smoothing:antialiased; }
+
+        /* scrollbar */
+        ::-webkit-scrollbar { width:5px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:rgba(192,85,106,.25); border-radius:3px; }
+        ::selection { background:rgba(192,85,106,.15); }
+
+        /* ticker */
+        .tk { animation: tkMove 44s linear infinite; display:flex; width:max-content; }
+        .tk:hover { animation-play-state:paused; }
+        @keyframes tkMove { from{transform:translateX(0)} to{transform:translateX(-33.333%)} }
+
+        /* float cards */
+        @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        @keyframes floatB { 0%,100%{transform:translateY(0)} 50%{transform:translateY(10px)} }
+
+        /* pulse badge dot */
+        @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.55;transform:scale(.78)} }
+
+        /* scroll cue */
+        @keyframes cue { 0%,100%{opacity:.5;transform:translateX(-50%) translateY(0)} 50%{opacity:1;transform:translateX(-50%) translateY(8px)} }
+
+        /* spinner */
+        @keyframes spin { to{transform:rotate(360deg)} }
+
+        /* hover helpers */
+        .card-hover { transition: transform .26s, box-shadow .26s !important; }
+        .card-hover:hover { transform:translateY(-6px) !important; box-shadow:0 24px 56px rgba(30,26,24,.09) !important; }
+        .btn-hover { transition: transform .22s, box-shadow .22s !important; }
+        .btn-hover:hover { transform:translateY(-2px) !important; box-shadow:0 16px 40px rgba(192,85,106,.42) !important; }
+        .link-hover:hover { opacity:.7; }
+
+        /* mobile */
+        @media(max-width:768px) {
+          .hide-sm   { display:none !important; }
+          .show-sm   { display:flex !important; }
+          .col-1-sm  { grid-template-columns:1fr !important; }
+          .col-2-sm  { grid-template-columns:1fr 1fr !important; }
+          .sec-pad   { padding:72px 6% !important; }
+
+          /* Hero: single column, hero image as bg, content on top */
+          .hero-sect {
+            grid-template-columns: 1fr !important;
+            min-height: 100dvh !important;
+            padding-top: 0 !important;
+          }
+          .hero-left {
+            min-height: 100dvh !important;
+            padding: 96px 6% 52px !important;
+            justify-content: flex-end !important;
+            // background-image: url("/hero.jpg") !important;
+            background-size: cover !important;
+            background-position: center 25% !important;
+            position: relative !important;
+          }
+          .hero-left::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            // background: linear-gradient(to bottom, rgba(255,246,248,0.45) 0%, rgba(253,241,244,0.82) 45%, rgba(253,241,244,0.97) 100%);
+            z-index: 0;
+          }
+          .hero-left > * { position: relative; z-index: 1; }
+          .hero-h1 { font-size: clamp(38px,9vw,56px) !important; }
+          .hero-badge { margin-bottom: 14px !important; }
+          .hero-sub { font-size: 14px !important; margin-bottom: 18px !important; }
+          .hero-proof { margin-bottom: 18px !important; }
+          .hero-btns { margin-bottom: 28px !important; }
+          .hero-btns a:last-child { display: none !important; }
+        }
+        @media(max-width:480px) {
+          .col-2-sm  { grid-template-columns:1fr !important; }
+        }
+      `}</style>
+
+      {/* ══════════ MOBILE DRAWER ══════════ */}
+      {drawer && (
+        <div style={{ position:"fixed", inset:0, zIndex:400, display:"flex", flexDirection:"column", padding:"32px 7%", background:"linear-gradient(160deg, #2A1A1E 0%, #1E2820 100%)" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", paddingBottom:28, borderBottom:"1px solid rgba(255,255,255,.08)", marginBottom:32 }}>
+            <Image src="/logo.png" alt="Books by Kimberlie" width={180} height={72} style={{ objectFit:"contain", height:64 }} />
+            <button onClick={() => setDrawer(false)} style={{ background:"rgba(255,255,255,.08)", border:"none", borderRadius:"50%", width:42, height:42, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"white" }}>
+              <X size={20} />
+            </button>
+          </div>
+          <nav style={{ display:"flex", flexDirection:"column" }}>
+            {NAV.map(l => (
+              <a key={l} href={`#${l.toLowerCase()}`} onClick={() => setDrawer(false)}
+                style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:40, fontWeight:300, color:"rgba(255,255,255,.88)", textDecoration:"none", padding:"10px 0", borderBottom:"1px solid rgba(255,255,255,.07)", letterSpacing:"-.01em" }}>
+                {l}
+              </a>
+            ))}
+          </nav>
+          <a href="#contact" onClick={() => setDrawer(false)}
+            style={{ ...primaryBtn({ marginTop:36, alignSelf:"flex-start" }) }}>
+            Get Started <ArrowRight size={15} />
+          </a>
         </div>
-        <div className="flex flex-col">
-          {navLinks.map(l => (
-            <a key={l} href={`#${l.toLowerCase()}`}
-              className="font-display text-4xl font-normal text-white/75 py-3.5 border-b border-white/[.06] hover:text-rose transition-colors"
-              onClick={() => setDrawerOpen(false)}>{l}</a>
-          ))}
-        </div>
-        <a href="#contact" className="btn-rose self-start mt-10" onClick={() => setDrawerOpen(false)}>
-          Get Started <ArrowRight size={15} />
-        </a>
-      </div>
+      )}
 
-      {/* ── NAV ── */}
-      <motion.nav
-        className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-[6%] border-b transition-all duration-300 ${
-          scrolled ? "bg-cream/95 backdrop-blur-xl border-ink/10 shadow-sm" : "bg-transparent border-transparent"
-        }`}
-        initial={{ y: -24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }}
-      >
-        <Image src="/logo.png" alt="Books by Kimberlie" width={320} height={160}
-          className="h-[120px] w-auto object-contain transition-all duration-300"
-          style={{ filter: scrolled ? "none" : "brightness(0) invert(1)" }} />
+      {/* ══════════ NAV ══════════ */}
+      <header style={{
+        position:"fixed", top:0, left:0, right:0, zIndex:200,
+        display:"flex", alignItems:"center", justifyContent:"space-between",
+        padding:"0 6%", height:92,
+        background: scrolled ? "rgba(255,252,247,.97)" : "transparent",
+        backdropFilter: scrolled ? "blur(20px)" : "none",
+        boxShadow: scrolled ? "0 1px 0 rgba(192,85,106,.1), 0 4px 32px rgba(30,26,24,.05)" : "none",
+        transition:"background .3s, box-shadow .3s",
+      }}>
+        <Image src="/logo.png" alt="Books by Kimberlie" width={460} height={204} style={{ objectFit:"contain", height:88, width:"auto" }} />
 
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map(l => (
-            <a key={l} href={`#${l.toLowerCase()}`}
-              className={`text-sm transition-colors ${scrolled ? "text-ink/55 hover:text-ink" : "text-white/75 hover:text-white"}`}>
+        <nav className="hide-sm" style={{ display:"flex", alignItems:"center", gap:28 }}>
+          {NAV.map(l => (
+            <a key={l} href={`#${l.toLowerCase()}`} style={{ fontSize:13, fontWeight:500, letterSpacing:".03em", color:"#6B6461", textDecoration:"none", transition:"color .2s" }}
+              onMouseEnter={e => e.currentTarget.style.color = ROSE}
+              onMouseLeave={e => e.currentTarget.style.color = "#6B6461"}>
               {l}
             </a>
           ))}
-          <a href="#contact" className="btn-rose !py-[9px] !px-[22px] !text-sm">
-            Get Started <ArrowRight size={14} />
+          <a href="#contact" className="btn-hover" style={primaryBtn({ padding:"10px 22px", fontSize:13 }) as React.CSSProperties}>
+            Get Started <ArrowRight size={13} />
           </a>
-        </div>
+        </nav>
 
-        <button className="flex md:hidden flex-col gap-[5px] bg-transparent border-none cursor-pointer p-1 z-[110]"
-          onClick={() => setDrawerOpen(true)} aria-label="Open menu">
-          {[0, 1, 2].map(i => (
-            <span key={i} className={`block w-6 h-0.5 rounded-sm transition-colors ${scrolled ? "bg-ink" : "bg-white"}`} />
-          ))}
+        <button className="show-sm" onClick={() => setDrawer(true)} style={{ display:"none", background:"none", border:"none", cursor:"pointer", padding:4, color:ROSE }}>
+          <Menu size={26} />
         </button>
-      </motion.nav>
+      </header>
 
-      {/* ── HERO ── */}
-      <section id="home" className="relative min-h-screen grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+      {/* ══════════ HERO ══════════ */}
+      <section id="home" className="hero-sect" style={{
+        minHeight:"100vh", display:"grid", gridTemplateColumns:"1fr 1fr",
+        position:"relative", overflow:"hidden", paddingTop:80,
+        background:`linear-gradient(140deg, #FDF6F8 0%, ${IVORY} 45%, #F4F9F7 100%)`,
+      }}>
+        {/* Soft background shapes */}
+        <div style={{ position:"absolute", top:-140, right:-120, width:700, height:700, borderRadius:"50%", background:`radial-gradient(circle, rgba(212,168,67,.12) 0%, transparent 68%)`, pointerEvents:"none" }} />
+        <div style={{ position:"absolute", bottom:-100, left:-100, width:560, height:560, borderRadius:"50%", background:`radial-gradient(circle, rgba(192,85,106,.1) 0%, transparent 68%)`, pointerEvents:"none" }} />
+        <div style={{ position:"absolute", top:"35%", left:"48%", width:320, height:320, borderRadius:"50%", background:`radial-gradient(circle, rgba(58,158,143,.07) 0%, transparent 68%)`, pointerEvents:"none" }} />
 
-        {/* LEFT — dark panel with content */}
-        <motion.div
-          className="hero-left relative flex flex-col justify-center px-[8%] pt-[130px] pb-20 bg-ink z-[2] overflow-hidden max-md:bg-transparent"
-          style={{ opacity: heroOpacity }}
-        >
-          {/* Badge */}
-          <motion.div
-            className="inline-flex items-center gap-2 bg-rose/15 border border-rose/35 rounded-full px-4 py-1.5 text-xs text-white/80 tracking-[.05em] mb-7 w-fit"
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0" />
+        {/* LEFT — content */}
+        <div className="hero-left" style={{ display:"flex", flexDirection:"column", justifyContent:"center", padding:"72px 5% 72px 8%", position:"relative", zIndex:2 }}>
+
+          <div className="hero-badge" style={pill()}>
+            <span style={{ width:7, height:7, borderRadius:"50%", background:ROSE, flexShrink:0, animation:"blink 2.2s infinite" }} />
             Remote Bookkeeping · Vermont
-          </motion.div>
-
-          {/* H1 */}
-          <motion.h1
-            className="font-display text-[clamp(44px,4.5vw,76px)] font-normal leading-[1.06] text-white mb-6 relative z-[1]"
-            initial={{ opacity: 0, y: 44 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
-            From chaos to calm,<br />
-            <em className="text-rose italic">one ledger</em><br />
-            at a time.
-          </motion.h1>
-
-          {/* Subtext */}
-          <motion.p
-            className="text-[17px] text-white/50 leading-[1.8] mb-10 max-w-[440px] relative z-[1]"
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.7 }}>
-            Remote bookkeeping for builders, creatives &amp; businesses — so you can focus on growing what you love.
-          </motion.p>
-
-          {/* Social proof */}
-          <motion.div
-            className="flex items-center gap-3.5 relative z-[1] mb-12"
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }}>
-            <div className="flex">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-ink"
-                  style={{ zIndex: 3 - i, marginLeft: i > 0 ? -14 : 0 }}>
-                  <Image src={`/client${i + 1}.jpg`} alt="client" fill style={{ objectFit: "cover", borderRadius: "50%" }} />
-                </div>
-              ))}
-            </div>
-            <div className="text-[13px] text-white/45">
-              <div className="flex gap-0.5 mb-1">
-                {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="#C9964A" color="#C9964A" />)}
-              </div>
-              <span><strong className="text-white/80 font-medium">200+ clients</strong> trust Kimberlie with their books</span>
-            </div>
-          </motion.div>
-
-          {/* Buttons */}
-          <motion.div
-            className="flex gap-3 flex-wrap mb-[52px] relative z-[1]"
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.65 }}>
-            <a href="#contact" className="btn-rose btn-xl">Get a Free Consultation <ArrowRight size={18} /></a>
-            <a href="#services" className="btn-ghost-white btn-xl">See My Services</a>
-          </motion.div>
-
-          {/* Stats strip */}
-          <motion.div
-            className="grid grid-cols-4 relative z-[1] border-t border-white/[.08] pt-8"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.7 }}>
-            {[["30+", "Years Experience"], ["200+", "Happy Clients"], ["100%", "Remote & Flexible"], ["$0", "Hidden Fees"]].map(([v, l], i) => (
-              <div key={l} className={`flex flex-col gap-1 ${i < 3 ? "pr-5 border-r border-white/[.06]" : "pl-5"} ${i > 0 && i < 3 ? "pl-5" : ""}`}>
-                <span className="font-display text-[30px] text-white font-semibold leading-none">{v}</span>
-                <span className="text-[11px] text-white/35">{l}</span>
-              </div>
-            ))}
-          </motion.div>
-        </motion.div>
-
-        {/* RIGHT — image with parallax */}
-        <div className="relative overflow-hidden max-md:absolute max-md:inset-0 max-md:z-0">
-          <motion.div className="absolute inset-[-12%] will-change-transform">
-            <Image src="/hero.jpg" alt="" fill priority style={{ objectFit: "cover", objectPosition: "center 40%" }} />
-            <div className="absolute inset-0 bg-gradient-to-br from-ink/65 via-ink/30 to-ink/10 max-md:from-ink/80 max-md:via-ink/70 max-md:to-ink/85" />
-            <div className="absolute inset-0 bg-gradient-to-b from-[rgba(201,150,74,0.08)] via-transparent to-[rgba(30,107,94,0.12)]" />
-          </motion.div>
-
-          {/* "Books up to date" badge — desktop only */}
-          <motion.div
-            className="absolute top-[10%] left-[8%] z-10 bg-rose/85 backdrop-blur-xl rounded-xl px-[18px] py-3 items-center gap-2.5 hidden md:flex"
-            initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1, duration: 0.5 }}>
-            <span className="w-2 h-2 rounded-full bg-white/90" />
-            <span className="text-[13px] text-white font-medium tracking-[.02em]">Books up to date</span>
-          </motion.div>
-
-          {/* Floating stat cards — desktop only */}
-          <div className="absolute z-10 bottom-[10%] right-[6%] flex-col gap-3.5 hidden md:flex">
-            <motion.div
-              className="bg-teal/35 border border-[rgba(125,211,200,0.2)] rounded-2xl px-6 py-[18px] backdrop-blur-xl min-w-[180px]"
-              animate={{ y: [-6, 6, -6] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}>
-              <div className="text-[10px] tracking-[.14em] uppercase text-white/45 mb-2">Cash Flow · This Month</div>
-              <div className="text-[28px] font-medium text-[#7DD3C8] leading-none">$12,480</div>
-              <div className="text-xs text-[#8FD4A0] mt-[5px]">↑ 18% vs last month</div>
-            </motion.div>
-            <motion.div
-              className="bg-ink/55 border border-white/[.12] rounded-2xl px-6 py-[18px] backdrop-blur-xl min-w-[180px]"
-              animate={{ y: [6, -6, 6] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}>
-              <div className="text-[10px] tracking-[.14em] uppercase text-white/45 mb-2">Books Status</div>
-              <div className="text-[15px] font-medium text-[#8FD4A0]">✓ Up to Date</div>
-            </motion.div>
           </div>
 
-          {/* Scroll cue */}
-          <motion.div
-            className="absolute bottom-7 left-1/4 -translate-x-1/2 text-white/25 z-[5]"
-            animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity }}>
-            <ChevronDown size={22} />
-          </motion.div>
+          <h1 className="hero-h1" style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(46px,4.6vw,74px)", fontWeight:300, lineHeight:1.06, color:INK, margin:"22px 0 18px", letterSpacing:"-.025em" }}>
+            From <em style={{ fontStyle:"italic", color:ROSE }}>chaos</em><br />
+            to calm, <em style={{ fontStyle:"italic" }}>one</em><br />
+            <em style={{ fontStyle:"italic", color:ROSE }}>ledger</em> at a time.
+          </h1>
+
+          <p className="hero-sub" style={{ ...body(), maxWidth:440, marginBottom:26 }}>
+            Remote bookkeeping for builders, creatives &amp; businesses — so you can focus on growing what you love.{" "}
+            <span style={{ color:ROSE, fontWeight:500 }}>No spreadsheet nightmares, just crystal-clear numbers.</span>
+          </p>
+
+          {/* social proof */}
+          <div className="hero-proof" style={{ display:"flex", alignItems:"center", gap:14, marginBottom:28 }}>
+            {avatarRow(["/client1.jpg", "/client2.jpg", "/client3.jpg"])}
+            <div>
+              {starRow(5, 12)}
+              <span style={{ fontSize:13, color:"#888", marginTop:3, display:"block" }}>
+                <strong style={{ color:INK }}>200+ clients</strong> trust Kimberlie
+              </span>
+            </div>
+          </div>
+
+          {/* CTAs */}
+          <div className="hero-btns" style={{ display:"flex", gap:12, flexWrap:"wrap", marginBottom:44 }}>
+            <a href="#contact" className="btn-hover" style={primaryBtn() as React.CSSProperties}>
+              Get a Free Consultation <ArrowRight size={16} />
+            </a>
+            <a href="#services" className="link-hover" style={outlineBtn() as React.CSSProperties}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = ROSE; e.currentTarget.style.color = ROSE; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(30,26,24,.22)"; e.currentTarget.style.color = INK; }}>
+              See My Services
+            </a>
+          </div>
+
+          {/* Stats — clean 4-col, each its own card */}
+          <div className="col-2-sm" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10 }}>
+            {[
+              { v:"30+",  l:"Years Exp.",    c:ROSE },
+              { v:"200+", l:"Happy Clients", c:TEAL },
+              { v:"100%", l:"Remote",        c:GOLD },
+              { v:"$0",   l:"Hidden Fees",   c:PLUM },
+            ].map(s => (
+              <div key={s.l} style={{ background:"white", borderRadius:16, padding:"16px 10px", textAlign:"center", border:`1px solid ${s.c}22`, boxShadow:`0 2px 12px ${s.c}12` }}>
+                <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, fontWeight:600, color:s.c, lineHeight:1, marginBottom:4 }}>{s.v}</div>
+                <div style={{ fontSize:10, fontWeight:500, color:"#AAA", letterSpacing:".04em", lineHeight:1.4 }}>{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* RIGHT — hero photo */}
+        <div className="hide-sm" style={{ display:"flex", alignItems:"center", justifyContent:"center", padding:"60px 6% 60px 2%", position:"relative", zIndex:2 }}>
+          <div style={{ position:"relative", width:"100%", maxWidth:500, aspectRatio:"4/5", borderRadius:48, overflow:"hidden", boxShadow:`0 48px 120px rgba(30,26,24,.16), 0 0 0 1px rgba(212,168,67,.25)` }}>
+            <Image src="/hero.jpg" alt="Bookkeeping" fill style={{ objectFit:"cover", objectPosition:"center 25%" }} />
+            <div style={{ position:"absolute", inset:0, background:`linear-gradient(to bottom, transparent 50%, rgba(30,26,24,.35))` }} />
+          </div>
+
+          {/* Floating status card */}
+          <div style={{ position:"absolute", top:"14%", left:"0%", background:"white", borderRadius:20, padding:"14px 18px", display:"flex", alignItems:"center", gap:11, boxShadow:"0 12px 48px rgba(30,26,24,.1)", animation:"floatA 4.5s ease-in-out infinite" }}>
+            <div style={{ width:36, height:36, borderRadius:10, background:`${TEAL}18`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+              <CheckCircle2 size={18} color={TEAL} />
+            </div>
+            <div>
+              <div style={{ fontSize:10, fontWeight:600, letterSpacing:".1em", textTransform:"uppercase", color:"#BBB", marginBottom:2 }}>Books Status</div>
+              <div style={{ fontSize:13, fontWeight:600, color:TEAL }}>All Up to Date ✓</div>
+            </div>
+          </div>
+
+          {/* Floating cash flow card */}
+          <div style={{ position:"absolute", bottom:"12%", right:"3%", background:"white", borderRadius:20, padding:"16px 20px", boxShadow:"0 12px 48px rgba(30,26,24,.1)", minWidth:190, animation:"floatB 5.5s ease-in-out infinite" }}>
+            <div style={{ fontSize:10, fontWeight:600, letterSpacing:".1em", textTransform:"uppercase", color:"#BBB", marginBottom:6 }}>Cash Flow · This Month</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:30, fontWeight:600, color:ROSE, lineHeight:1 }}>$12,480</div>
+            <div style={{ fontSize:11, fontWeight:600, color:TEAL, marginTop:5 }}>↑ 18% vs last month</div>
+          </div>
+        </div>
+
+        <div style={{ position:"absolute", bottom:20, left:"50%", color:ROSE, animation:"cue 2.4s ease-in-out infinite", opacity:.6 }}>
+          <ChevronDown size={22} />
         </div>
       </section>
 
-      {/* ── TICKER ── */}
-      <div className="bg-ink py-[17px] overflow-hidden">
-        <div className="ticker-track">
-          {[...Array(2)].map((_, r) =>
-            tickerItems.map((t, i) => (
-                <span key={`${r}-${i}`} className="inline-flex items-center gap-2.5 pr-10 text-xs font-medium tracking-[.12em] uppercase text-white/45 whitespace-nowrap">
-                  <span className="w-1 h-1 rounded-full bg-rose flex-shrink-0" />{t}
-                </span>
-              ))
+      {/* ══════════ TICKER ══════════ */}
+      <div style={{ overflow:"hidden", padding:"13px 0", background:`linear-gradient(90deg, ${ROSE} 0%, #C97060 30%, ${TEAL} 65%, #5B8FA8 100%)` }}>
+        <div className="tk">
+          {[...Array(4)].map((_, r) =>
+            TICKER.map((t, i) => (
+              <span key={`${r}-${i}`} style={{ display:"inline-flex", alignItems:"center", gap:10, paddingRight:36, fontSize:10.5, fontWeight:600, letterSpacing:".16em", textTransform:"uppercase", color:"white", whiteSpace:"nowrap" }}>
+                <span style={{ width:4, height:4, borderRadius:"50%", background:"rgba(255,255,255,.55)", flexShrink:0 }} />{t}
+              </span>
+            ))
           )}
         </div>
       </div>
 
-      {/* ── ABOUT ── */}
-      <section id="about" className="py-[110px] px-[8%] bg-cream">
-        <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-[80px] items-center mb-[72px]"
-          initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger}>
+      {/* ══════════ ABOUT ══════════ */}
+      <section id="about" className="sec-pad" style={{ padding:"108px 8%", background:IVORY }}>
+        <div style={{ maxWidth:1160, margin:"0 auto" }}>
 
-          {/* Text */}
-          <motion.div variants={fadeLeft} className="flex flex-col">
-            <div className={`${eyebrow} text-rose`}>Meet Your Bookkeeper</div>
-            <h2 className={`${sectionTitle} mb-6`}>
-              Hi, I am Kimberlie —<br />
-              <em className="text-rose italic">your financial calm</em><br />
-              in the storm.
-            </h2>
-            <p className="text-base text-ink/[.58] leading-[1.85]">
-              With 30+ years of hands-on experience across construction, hospitality, banking, and service industries,
-              I help business owners gain clear control over their finances so they can focus on what they do best — growing their business.
-            </p>
-            <p className="text-base text-ink/[.58] leading-[1.85] mt-3.5">
-              My expertise spans bookkeeping, AP/AR, billing, financial reporting, budgeting, forecasting,
-              cash flow management, reconciliations, payroll, and process improvement.
-            </p>
-            <a href="#contact" className="btn-rose mt-9 w-fit">Book a Free Call <ArrowRight size={16} /></a>
-          </motion.div>
+          {/* Photo + text */}
+          <div className="col-1-sm" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:80, alignItems:"center", marginBottom:96 }}>
 
-          {/* Photo */}
-          <motion.div variants={fadeRight} className="relative flex flex-col gap-5">
-            <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden">
-              <Image src="/hero2.jpg" alt="Kimberlie Gerstner" fill style={{ objectFit: "contain", objectPosition: "center" }} />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/55 to-transparent" />
-              <div className="absolute bottom-6 left-6 bg-rose rounded-2xl p-[14px_20px] text-white flex flex-col gap-0.5">
-                <span className="font-display text-[30px] font-semibold leading-none">30+</span>
-                <span className="text-[11px] opacity-85 tracking-[.04em]">Years of Experience</span>
-              </div>
-            </div>
-            {/* Client strip */}
-            <div className="flex items-center gap-4 bg-white rounded-2xl p-[14px_20px] border border-ink/[.07] shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-              <div className="flex">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-white"
-                    style={{ zIndex: 3 - i, marginLeft: i > 0 ? -14 : 0 }}>
-                    <Image src={`/client${i + 1}.jpg`} alt="client" fill style={{ objectFit: "cover", borderRadius: "50%" }} />
-                  </div>
-                ))}
-              </div>
-              <div>
-                <div className="flex gap-0.5 mb-1">{[...Array(5)].map((_, i) => <Star key={i} size={13} fill="#C9964A" color="#C9964A" />)}</div>
-                <div className="text-[13px] text-ink/55">Trusted by 200+ business owners</div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        {/* Why card */}
-        <motion.div className="bg-ink rounded-[28px] p-[52px]"
-          initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
-          <motion.div variants={fadeUp} className="mb-10">
-            <div className={`${eyebrow} text-rose`}>Why Choose Kimberlie?</div>
-            <p className="text-white/45 text-[15px] max-w-[380px]">
-              Four reasons clients keep coming back — and referring their friends.
-            </p>
-          </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {reasons.map((r, i) => (
-              <motion.div key={r.title} variants={fadeUp} custom={i} className="flex gap-4 items-start">
-                <div className="w-[38px] h-[38px] flex-shrink-0 rounded-[10px] bg-white/[.05] border border-white/[.09] flex items-center justify-center">
-                  <r.icon size={18} color="#D4614A" />
+            {/* Photo col */}
+            <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+              <div style={{ position:"relative", width:"100%", aspectRatio:"3/4", borderRadius:36, overflow:"hidden", boxShadow:`0 32px 80px rgba(30,26,24,.12), 0 0 0 1px rgba(212,168,67,.2)` }}>
+                <Image src="/hero2.svg" alt="Kimberlie Gerstner" fill style={{ objectFit:"cover", objectPosition:"top center" }} />
+                <div style={{ position:"absolute", inset:0, background:`linear-gradient(to top, rgba(30,26,24,.55) 0%, transparent 50%)` }} />
+                {/* experience badge */}
+                <div style={{ position:"absolute", bottom:24, left:24, background:`linear-gradient(135deg, ${ROSE}, #D4756A)`, borderRadius:18, padding:"12px 20px", color:"white" }}>
+                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:30, fontWeight:600, lineHeight:1 }}>30+</div>
+                  <div style={{ fontSize:11, opacity:.9, marginTop:3, letterSpacing:".04em" }}>Years of Experience</div>
                 </div>
+              </div>
+
+              {/* Trust strip */}
+              <div style={{ ...cardBase({ padding:"16px 20px" }), display:"flex", alignItems:"center", gap:14 }}>
+                {avatarRow(["/client1.jpg", "/client2.jpg", "/client3.jpg"])}
                 <div>
-                  <div className="text-[15px] font-medium text-white mb-[5px]">{r.title}</div>
-                  <div className="text-[13px] text-white/[.42] leading-[1.65]">{r.desc}</div>
+                  {starRow(5, 12)}
+                  <div style={{ fontSize:12, color:"#888", marginTop:3 }}>Trusted by 200+ business owners</div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ── SERVICES ── */}
-      <section id="services" className="py-[110px] px-[8%] bg-mist">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
-          <motion.div variants={fadeUp} className="flex justify-between items-end gap-8 flex-wrap mb-14">
-            <div>
-              <div className={`${eyebrow} text-teal`}>What I Offer</div>
-              <h2 className={sectionTitle}>
-                Services built for<br /><em className="text-rose italic">builders &amp; creatives</em>
-              </h2>
-            </div>
-            <p className="text-base text-ink/50 max-w-[320px]">
-              Every service is customized to your business — not a one-size-fits-all template.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {services.map((s, i) => (
-              <motion.div key={s.title} variants={fadeUp} custom={i}
-                className="bg-white rounded-3xl overflow-hidden border border-ink/[.06] transition-all duration-300 hover:-translate-y-[6px] hover:shadow-card-hover">
-                <div className="relative h-[220px] overflow-hidden">
-                  <Image src={s.image} alt={s.title} fill style={{ objectFit: "contain" }} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/35 to-transparent" />
-                  <div className="absolute top-4 left-4 z-[2] w-[42px] h-[42px] rounded-xl flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.2)]"
-                    style={{ background: s.accent }}>
-                    <s.icon size={18} color="#fff" />
-                  </div>
-                  <span className="absolute bottom-2 right-4 z-[2] font-display text-[56px] font-semibold text-white/[.12] leading-none">{s.num}</span>
-                </div>
-                <div className="p-7 pb-8">
-                  <div className="h-[3px] rounded-sm w-10 mb-4" style={{ background: s.accent }} />
-                  <h3 className="font-display text-[26px] font-normal mb-2.5">{s.title}</h3>
-                  <p className="text-sm text-ink/55 leading-[1.75]">{s.desc}</p>
-                  <Link href="#contact" className="inline-flex items-center gap-[5px] text-sm font-medium mt-5 hover:opacity-80 transition-opacity"
-                    style={{ color: s.accent }}>
-                    Learn more <ArrowRight size={13} />
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ── PROCESS ── */}
-      <section id="process" className="py-[110px] px-[8%] bg-cream">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
-          <motion.div variants={fadeUp} className="text-center mb-[72px]">
-            <div className={`${eyebrow} text-rose`}>The Process</div>
-            <h2 className={sectionTitle}>Simple from <em className="text-rose italic">start to finish</em></h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 relative">
-            {/* Connector line */}
-            <div className="hidden md:block absolute top-[27px] left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-rose/25 to-transparent" />
-
-            {steps.map((s, i) => (
-              <motion.div key={s.n} variants={fadeUp} custom={i} className="relative">
-                <div className={`w-[54px] h-[54px] rounded-full flex items-center justify-center mb-[22px] ${
-                  i === 0
-                    ? "bg-rose border border-rose shadow-[0_8px_24px_-8px_rgba(212,97,74,0.55)]"
-                    : "bg-white border-[1.5px] border-ink/[.12]"
-                }`}>
-                  <span className={`font-display text-[20px] font-semibold ${i === 0 ? "text-white" : "text-rose"}`}>{s.n}</span>
-                </div>
-                <h4 className="text-[17px] font-medium mb-2.5 text-ink">{s.title}</h4>
-                <p className="text-sm text-ink/[.52] leading-[1.75]">{s.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ── TESTIMONIALS ── */}
-      <section className="py-[110px] px-[8%] bg-ink">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
-          <motion.div variants={fadeUp} className="flex justify-between items-end flex-wrap gap-6 mb-14">
-            <div>
-              <div className={`${eyebrow} text-rose`}>Client Stories</div>
-              <h2 className={`${sectionTitle} text-white`}>
-                What clients<br /><em className="text-rose italic">are saying</em>
-              </h2>
-            </div>
-            <div className="flex items-center gap-1">
-              {[...Array(5)].map((_, i) => <Star key={i} size={20} fill="#C9964A" color="#C9964A" />)}
-              <span className="text-sm text-white/35 ml-2.5">5.0 average</span>
-            </div>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <motion.div key={i} variants={fadeUp} custom={i}
-                className="bg-white/[.04] border border-white/[.08] rounded-3xl p-9 px-[30px] relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.35)]">
-                <div className="absolute top-4 right-5 font-display text-[80px] text-rose/[.08] leading-none pointer-events-none">&quot;</div>
-                <div className="flex gap-0.5 mb-[18px] relative z-[1]">
-                  {[...Array(t.stars)].map((_, j) => <Star key={j} size={14} fill="#C9964A" color="#C9964A" />)}
-                </div>
-                <p className="text-[15px] text-white/[.72] leading-[1.8] italic mb-[26px] relative z-[1]">&quot;{t.text}&quot;</p>
-                <div className="flex items-center gap-3.5 border-t border-white/[.06] pt-[22px]">
-                  <div className="relative w-11 h-11 rounded-full overflow-hidden flex-shrink-0 border-2 border-rose/30">
-                    <Image src={`/client${i + 1}.jpg`} alt={t.name} fill style={{ objectFit: "cover", borderRadius: "50%" }} />
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium text-white">{t.name}</div>
-                    <div className="text-xs text-white/35">{t.role}</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ── CONTACT ── */}
-      <section id="contact" className="py-[110px] px-[8%] bg-cream">
-        <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-[80px] items-start"
-          initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
-
-          {/* Left */}
-          <motion.div variants={fadeLeft} className="flex flex-col">
-            <div className={`${eyebrow} text-rose`}>Get In Touch</div>
-            <h2 className={`${sectionTitle} mb-6`}>
-              Let&apos;s simplify your<br /><em className="text-rose italic">books together</em>
-            </h2>
-            <p className="text-base text-ink/[.58] leading-[1.85]">
-              Ready to go from chaos to calm? I&apos;ll get back to you quickly — no jargon, no pressure, just a friendly conversation about your finances.
-            </p>
-
-            {/* Photo card */}
-            <div className="relative h-[240px] rounded-[20px] overflow-hidden my-7">
-              <Image src="/contact-photo.png" alt="Kimberlie" fill style={{ objectFit: "contain", objectPosition: "top" }} />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
-              <div className="absolute bottom-5 left-[22px] flex flex-col gap-0.5 text-white">
-                <span className="text-[15px] font-medium">Kimberlie Gerstner</span>
-                <span className="text-[13px] opacity-65">Certified Bookkeeper</span>
               </div>
             </div>
 
-            {/* Contact details */}
-            <div className="flex flex-col gap-3.5">
-              {[
-                { icon: Mail,           label: "Email",    value: "kimberlie@booksbykimberlie.com" },
-                { icon: Phone,          label: "Mobile",   value: "830-515-9818" },
-                { icon: Phone,          label: "Office",   value: "830-730-4160" },
-                { icon: MessageCircle,  label: "WhatsApp", value: "Available" },
-              ].map(c => (
-                <div key={c.label} className="flex items-center gap-4">
-                  <div className="w-[42px] h-[42px] flex-shrink-0 rounded-[11px] bg-rose-light flex items-center justify-center">
-                    <c.icon size={17} color="#D4614A" />
+            {/* Text col */}
+            <div style={{ display:"flex", flexDirection:"column" }}>
+              <div style={eyebrow()}>Meet Your Bookkeeper</div>
+              <h2 style={displayTitle()}>
+                Hi, I&apos;m Kimberlie —<br />
+                <em style={{ color:ROSE, fontStyle:"italic" }}>your financial calm</em><br />
+                in the storm.
+              </h2>
+              <p style={{ ...body(), marginBottom:14 }}>
+                With 30+ years of hands-on experience across construction, hospitality, banking, and service industries,
+                I help business owners gain clear control of their finances — so they can focus on what they love most.
+              </p>
+              <p style={{ ...body(), marginBottom:36 }}>
+                I know bookkeeping can sound about as exciting as watching paint dry — but I promise, clear books mean
+                more money in your pocket and zero tax-season panic. That&apos;s actually pretty wonderful.
+              </p>
+              <a href="#contact" className="btn-hover" style={primaryBtn({ alignSelf:"flex-start" }) as React.CSSProperties}>
+                Book a Free Call <ArrowRight size={15} />
+              </a>
+            </div>
+          </div>
+
+          {/* Why choose */}
+          <div style={{ background:MIST, borderRadius:32, padding:"52px 30px" }}>
+            <div style={{ marginBottom:20 }}>
+              <div style={eyebrow()}>Why Choose Kimberlie?</div>
+              <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(26px,2.8vw,38px)", fontWeight:300, lineHeight:1.15, letterSpacing:"-.02em", color:INK }}>
+                Four reasons clients <em style={{ color:ROSE, fontStyle:"italic" }}>keep coming back</em>
+              </h3>
+            </div>
+            <div className="col-2-sm" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:20 }}>
+              {WHY.map(w => (
+                <div key={w.title} style={{ background:"white", border:`1px solid ${w.c}18`, borderRadius:22, padding:"26px 20px", transition:"transform .25s, box-shadow .25s", cursor:"default" }}
+                  onMouseEnter={e => hoverLift(e as unknown as React.MouseEvent<HTMLElement>, true)}
+                  onMouseLeave={e => hoverLift(e as unknown as React.MouseEvent<HTMLElement>, false)}>
+                  <div style={{ width:44, height:44, borderRadius:13, background:w.bg, border:`1px solid ${w.c}30`, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:16 }}>
+                    <w.icon size={20} color={w.c} />
                   </div>
-                  <div>
-                    <div className="text-[11px] text-ink/40 mb-px">{c.label}</div>
-                    <div className="text-sm text-ink">{c.value}</div>
-                  </div>
+                  <div style={{ fontSize:14, fontWeight:600, color:INK, marginBottom:8, letterSpacing:".01em" }}>{w.title}</div>
+                  <div style={{ fontSize:13, color:"#888", lineHeight:1.72 }}>{w.desc}</div>
                 </div>
               ))}
             </div>
-          </motion.div>
-
-          {/* Right — form */}
-          <motion.div variants={fadeRight}>
-            {submitted ? (
-              <div className="bg-white rounded-[28px] border border-ink/[.06] shadow-soft-xl flex flex-col items-center text-center p-14">
-                <div className="w-[72px] h-[72px] rounded-full bg-teal-light flex items-center justify-center mb-6">
-                  <CheckCircle2 size={40} color="#1E6B5E" />
-                </div>
-                <h3 className="font-display text-[32px] font-normal text-ink mb-3">Message sent!</h3>
-                <p className="text-[15px] text-ink/[.58] leading-[1.8] max-w-[360px] mb-7">
-                  Thanks for reaching out. I&apos;ll get back to you quickly.
-                  Check your inbox — I&apos;ve sent you a confirmation email.
-                </p>
-                <div className="flex flex-col gap-2.5 bg-mist rounded-xl p-4 px-6 w-full mb-1">
-                  <div className="flex items-center gap-2.5 text-sm text-ink/65"><Phone size={15} color="#D4614A" /><span>830-515-9818</span></div>
-                  <div className="flex items-center gap-2.5 text-sm text-ink/65"><Mail size={15} color="#D4614A" /><span>kimberlie@booksbykimberlie.com</span></div>
-                </div>
-                <button className="btn-rose w-full justify-center py-4 text-base rounded-xl mt-7"
-                  onClick={() => { setSubmitted(false); setFormError(null); }}>
-                  Send Another Message
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={submit} className="bg-white rounded-[28px] p-11 border border-ink/[.06] shadow-soft-xl" noValidate>
-                {formError && (
-                  <div className="flex items-start gap-2.5 bg-[#FEF0EF] border border-[#F5C4C4] rounded-[10px] p-[13px_16px] text-sm text-[#A8302C] leading-[1.55] mb-5">
-                    <span className="flex-shrink-0">⚠</span>{formError}
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                  <div className="flex flex-col gap-[7px]">
-                    <label className="text-[13px] font-medium text-ink/50">Your Name</label>
-                    <input placeholder="Jane Smith" value={name}
-                      onChange={e => { setName(e.target.value); setFieldErrors(p => ({ ...p, name: "" })); }}
-                      className={`${inputBase} ${fieldErrors.name ? "border-[#E24B4A] !bg-[#FFF5F5]" : "border-ink/[.09]"}`}
-                      disabled={submitting} />
-                    {fieldErrors.name && <span className="text-xs text-[#E24B4A]">{fieldErrors.name}</span>}
-                  </div>
-                  <div className="flex flex-col gap-[7px]">
-                    <label className="text-[13px] font-medium text-ink/50">Email</label>
-                    <input type="email" placeholder="jane@business.com" value={email}
-                      onChange={e => { setEmail(e.target.value); setFieldErrors(p => ({ ...p, email: "" })); }}
-                      className={`${inputBase} ${fieldErrors.email ? "border-[#E24B4A] !bg-[#FFF5F5]" : "border-ink/[.09]"}`}
-                      disabled={submitting} />
-                    {fieldErrors.email && <span className="text-xs text-[#E24B4A]">{fieldErrors.email}</span>}
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-[7px] mb-4">
-                  <label className="text-[13px] font-medium text-ink/50">Tell me about your business</label>
-                  <textarea placeholder="I'm a contractor and I need help with..." value={message}
-                    onChange={e => { setMessage(e.target.value); setFieldErrors(p => ({ ...p, message: "" })); }}
-                    className={`${inputBase} min-h-[140px] resize-y ${fieldErrors.message ? "border-[#E24B4A] !bg-[#FFF5F5]" : "border-ink/[.09]"}`}
-                    disabled={submitting} />
-                  {fieldErrors.message && <span className="text-xs text-[#E24B4A]">{fieldErrors.message}</span>}
-                </div>
-
-                <button type="submit"
-                  className={`btn-rose w-full justify-center py-4 text-base rounded-xl ${submitting ? "opacity-75 cursor-not-allowed" : ""}`}
-                  disabled={submitting}>
-                  {submitting ? <><span className="c-spinner" /> Sending...</> : <>Send Message <ArrowRight size={17} /></>}
-                </button>
-
-                <p className="text-center text-[13px] text-ink/35 mt-3.5">
-                  <CheckCircle2 size={13} className="inline mr-[5px] align-middle" />
-                  Quick responses · No spam, ever.
-                </p>
-              </form>
-            )}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </section>
 
-      {/* ── NEWSLETTER ── */}
-      <div className="bg-teal py-14 px-[8%] flex items-center justify-between gap-8 flex-wrap">
-        <div>
-          <h3 className="font-display text-[28px] text-white font-normal mb-1.5">Stay in the loop</h3>
-          <p className="text-[15px] text-white/60">Get helpful bookkeeping tips and updates.</p>
-        </div>
-
-        {nlStatus === "success" ? (
-          <div className="flex items-center gap-2.5 text-teal-light font-semibold text-[15px]">
-            <CheckCircle2 size={20} color="#E0F0EC" />{nlMessage}
-          </div>
-        ) : (
-          <form onSubmit={submitNewsletter} className="flex gap-0 bg-white/10 border border-white/15 rounded-full p-1.5" noValidate>
-            <div className="flex flex-col gap-1.5 flex-1">
-              <input type="email" placeholder="your@email.com"
-                className="nl-input bg-transparent border-none text-white py-2 px-[18px] font-sans text-[15px] outline-none min-w-[220px]"
-                value={nlEmail}
-                onChange={e => { setNlEmail(e.target.value); setNlStatus("idle"); setNlMessage(""); }}
-                disabled={nlSubmitting}
-                style={{ borderColor: nlStatus === "error" ? "#D4614A" : undefined }} />
-              {nlStatus === "error" && <span className="text-xs text-rose pl-0.5">{nlMessage}</span>}
+      {/* ══════════ SERVICES ══════════ */}
+      <section id="services" className="sec-pad" style={{ padding:"108px 8%", background:"white" }}>
+        <div style={{ maxWidth:1160, margin:"0 auto" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", flexWrap:"wrap", gap:24, marginBottom:56 }}>
+            <div>
+              <div style={eyebrow(TEAL)}>What I Offer</div>
+              <h2 style={displayTitle()}>
+                Services built for<br />
+                <em style={{ color:ROSE, fontStyle:"italic" }}>builders &amp; creatives</em>
+              </h2>
             </div>
-            <button type="submit"
-              className={`bg-white text-teal border-none rounded-full py-2.5 px-[26px] font-sans text-sm font-semibold cursor-pointer hover:bg-white/90 transition-colors whitespace-nowrap ${nlSubmitting ? "opacity-75 cursor-not-allowed" : ""}`}
-              disabled={nlSubmitting}>
-              {nlSubmitting ? "Subscribing..." : "Subscribe"}
-            </button>
-          </form>
-        )}
+            <p style={{ ...body(), maxWidth:300 }}>Every service is customized to your business — not a one-size-fits-all template.</p>
+          </div>
+
+          <div className="col-1-sm" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:22 }}>
+            {SERVICES.map(s => (
+              <div key={s.title} className="card-hover" style={{ ...cardBase({ overflow:"hidden" }), cursor:"default" }}>
+                <div style={{ position:"relative", height:214, background:s.bg }}>
+                  <Image src={s.img} alt={s.title} fill style={{ objectFit:"contain", padding:20 }} />
+                  <span style={{ position:"absolute", bottom:6, right:14, fontFamily:"'Cormorant Garamond',serif", fontSize:52, fontWeight:600, color:s.accent, opacity:.09, lineHeight:1, pointerEvents:"none", userSelect:"none" }}>{s.num}</span>
+                </div>
+                <div style={{ padding:"26px 28px 30px" }}>
+                  <div style={{ height:2, width:40, borderRadius:1, background:s.accent, marginBottom:16, opacity:.7 }} />
+                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:25, fontWeight:400, color:INK, marginBottom:10, letterSpacing:"-.01em" }}>{s.title}</h3>
+                  <p style={{ fontSize:13, color:"#888", lineHeight:1.82 }}>{s.desc}</p>
+                  <Link href="#contact" className="link-hover" style={{ display:"inline-flex", alignItems:"center", gap:5, fontSize:12, fontWeight:600, color:s.accent, textDecoration:"none", marginTop:18, letterSpacing:".03em", transition:"opacity .2s" }}>
+                    Learn more <ArrowRight size={12} />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ PROCESS — gold coin shower ══════════ */}
+      <section id="process" className="sec-pad" style={{ padding:"108px 8%", position:"relative", overflow:"hidden", background:`linear-gradient(140deg, #FBF7F0 0%, #F7F0F3 100%)` }}>
+        <GoldCoinShower />
+
+        <div style={{ maxWidth:1160, margin:"0 auto", position:"relative", zIndex:1 }}>
+          <div style={{ textAlign:"center", marginBottom:64 }}>
+            <div style={{ ...eyebrow(GOLD), textAlign:"center" }}>The Process</div>
+            <h2 style={{ ...displayTitle({ textAlign:"center", marginBottom:14 }) }}>
+              Simple from <em style={{ color:ROSE, fontStyle:"italic" }}>start to finish</em>
+            </h2>
+            <p style={{ ...body({ textAlign:"center" }), maxWidth:400, margin:"0 auto" }}>
+              No accounting jargon. No confusing meetings. Just four clear steps to financial peace.
+            </p>
+          </div>
+
+          <div className="col-2-sm" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:20 }}>
+            {STEPS.map((s, i) => (
+              <div key={s.n} className="card-hover" style={{ background:"rgba(255,255,255,.88)", backdropFilter:"blur(12px)", border:`1px solid ${s.c}22`, borderRadius:24, padding:"32px 24px", textAlign:"center", cursor:"default" }}>
+                {/* Step number circle */}
+                <div style={{ width:52, height:52, borderRadius:"50%", background:`linear-gradient(135deg, ${s.c}, ${s.c}BB)`, color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:600, margin:"0 auto 20px", boxShadow:`0 8px 24px ${s.c}35` }}>
+                  {s.n}
+                </div>
+                {/* connector line — desktop only */}
+                {i < 3 && (
+                  <div className="hide-sm" style={{ position:"absolute", top:"calc(32px + 26px)", left:"calc(50% + 26px + 10px)", width:"calc(100% - 52px - 20px)", height:1, background:`linear-gradient(90deg, ${s.c}60, ${STEPS[i+1].c}60)`, pointerEvents:"none" }} />
+                )}
+                <h4 style={{ fontSize:15, fontWeight:600, color:INK, marginBottom:10, letterSpacing:".01em" }}>{s.title}</h4>
+                <p style={{ fontSize:13, color:"#888", lineHeight:1.78 }}>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ TESTIMONIALS ══════════ */}
+      <section id="testimonials" className="sec-pad" style={{ padding:"108px 8%", background:IVORY }}>
+        <div style={{ maxWidth:1160, margin:"0 auto" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", flexWrap:"wrap", gap:20, marginBottom:56 }}>
+            <div>
+              <div style={eyebrow()}>Client Stories</div>
+              <h2 style={displayTitle()}>
+                What clients<br />
+                <em style={{ color:TEAL, fontStyle:"italic" }}>are saying</em>
+              </h2>
+            </div>
+            <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+              {starRow(5, 20)}
+              <span style={{ fontSize:13, color:"#AAA", marginLeft:8 }}>5.0 average</span>
+            </div>
+          </div>
+
+          <div className="col-1-sm" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:20 }}>
+            {TESTI.map((t, i) => (
+              <div key={i} className="card-hover" style={{ ...cardBase({ padding:"32px 28px", overflow:"hidden", position:"relative" }), cursor:"default" }}>
+                {/* decorative quote mark */}
+                <div style={{ position:"absolute", top:16, right:20, fontFamily:"'Cormorant Garamond',serif", fontSize:72, color:t.c, opacity:.07, lineHeight:1, pointerEvents:"none", userSelect:"none" }}>&ldquo;</div>
+                {starRow(5, 13)}
+                <p style={{ fontSize:14, color:"#666", lineHeight:1.88, fontStyle:"italic", margin:"16px 0 24px", position:"relative", zIndex:1 }}>
+                  &ldquo;{t.q}&rdquo;
+                </p>
+                <div style={{ display:"flex", alignItems:"center", gap:14, borderTop:"1px solid rgba(30,26,24,.07)", paddingTop:20 }}>
+                  <div style={{ position:"relative", width:46, height:46, borderRadius:"50%", overflow:"hidden", border:`2px solid ${t.c}50`, flexShrink:0 }}>
+                    <Image src={t.img} alt={t.name} fill style={{ objectFit:"cover", borderRadius:"50%" }} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize:13, fontWeight:600, color:INK }}>{t.name}</div>
+                    <div style={{ fontSize:11, color:"#AAA", marginTop:2, letterSpacing:".02em" }}>{t.role}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ CONTACT ══════════ */}
+      <section id="contact" className="sec-pad" style={{ padding:"108px 8%", background:"white" }}>
+        <div style={{ maxWidth:1160, margin:"0 auto" }}>
+          <div className="col-1-sm" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:80, alignItems:"start" }}>
+
+            {/* Left */}
+            <div style={{ display:"flex", flexDirection:"column" }}>
+              <div style={eyebrow()}>Get In Touch</div>
+              <h2 style={displayTitle()}>
+                Let&apos;s simplify your<br />
+                <em style={{ color:ROSE, fontStyle:"italic" }}>books together</em>
+              </h2>
+              <p style={{ ...body(), marginBottom:26 }}>
+                Ready to go from chaos to calm? I&apos;ll get back to you quickly — no jargon, no pressure,
+                just a friendly conversation about your finances.
+              </p>
+
+              {/* Contact photo */}
+              <div style={{ position:"relative", height:252, borderRadius:22, overflow:"hidden", marginBottom:28, boxShadow:`0 16px 48px rgba(30,26,24,.1), 0 0 0 1px rgba(212,168,67,.18)` }}>
+                <Image src="/contact-photo.png" alt="Kimberlie Gerstner" fill style={{ objectFit:"cover", objectPosition:"center top" }} />
+                <div style={{ position:"absolute", inset:0, background:`linear-gradient(to top, rgba(30,26,24,.6) 0%, transparent 52%)` }} />
+                <div style={{ position:"absolute", bottom:18, left:22, color:"white" }}>
+                  <div style={{ fontSize:15, fontWeight:600, letterSpacing:".02em" }}>Kimberlie Gerstner</div>
+                  <div style={{ fontSize:12, opacity:.75, marginTop:2, letterSpacing:".03em" }}>Certified Bookkeeper</div>
+                </div>
+              </div>
+
+              {/* Contact items */}
+              <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                {[
+                  { icon:Mail,         label:"Email",    val:"kimberlie@booksbykimberlie.com", c:ROSE, href:"mailto:kimberlie@booksbykimberlie.com" },
+                  { icon:Phone,        label:"Mobile",   val:"830-515-9818",                   c:TEAL, href:"tel:8305159818" },
+                  { icon:Phone,        label:"Office",   val:"830-730-4160",                   c:GOLD, href:"tel:8307304160" },
+                  { icon:MessageCircle,label:"WhatsApp", val:"Available",                      c:PLUM, href:"#contact" },
+                ].map(d => (
+                  <a key={d.label} href={d.href} style={{ display:"flex", alignItems:"center", gap:14, textDecoration:"none", padding:"12px 16px", borderRadius:14, background:MIST, border:"1px solid rgba(30,26,24,.06)", transition:"opacity .2s, transform .2s" }}
+                    onMouseEnter={e => { e.currentTarget.style.opacity = ".8"; e.currentTarget.style.transform = "translateX(4px)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateX(0)"; }}>
+                    <div style={{ width:40, height:40, borderRadius:11, background:`${d.c}14`, border:`1px solid ${d.c}30`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      <d.icon size={16} color={d.c} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize:10, fontWeight:600, color:"#BBB", letterSpacing:".08em", textTransform:"uppercase", marginBottom:1 }}>{d.label}</div>
+                      <div style={{ fontSize:13, fontWeight:500, color:INK }}>{d.val}</div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — form */}
+            <div>
+              {sent ? (
+                <div style={{ ...cardBase({ padding:"52px 40px", textAlign:"center" }) }}>
+                  <div style={{ width:76, height:76, borderRadius:"50%", background:`${ROSE}12`, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 22px" }}>
+                    <CheckCircle2 size={40} color={ROSE} />
+                  </div>
+                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, fontWeight:400, color:INK, marginBottom:12 }}>Message sent!</h3>
+                  <p style={{ ...body({ fontSize:14 }), maxWidth:320, margin:"0 auto 24px" }}>
+                    Thanks for reaching out. I&apos;ll get back to you quickly — check your inbox for a confirmation.
+                  </p>
+                  <div style={{ background:MIST, borderRadius:14, padding:"16px 20px", fontSize:13, color:"#666", display:"flex", flexDirection:"column", gap:8, marginBottom:4 }}>
+                    <span style={{ display:"flex", alignItems:"center", gap:8, justifyContent:"center" }}><Phone size={13} color={ROSE} /> 830-515-9818</span>
+                    <span style={{ display:"flex", alignItems:"center", gap:8, justifyContent:"center" }}><Mail size={13} color={ROSE} /> kimberlie@booksbykimberlie.com</span>
+                  </div>
+                  <button onClick={() => { setSent(false); setFormErr(null); }} className="btn-hover"
+                    style={primaryBtn({ width:"100%", justifyContent:"center", marginTop:20, borderRadius:14 }) as React.CSSProperties}>
+                    Send Another Message
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={sendContact} noValidate style={{ ...cardBase({ padding:"40px 38px" }) }}>
+                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:24, fontWeight:400, color:INK, marginBottom:6 }}>Send a message</h3>
+                  <p style={{ fontSize:13, color:"#AAA", marginBottom:28 }}>I&apos;ll respond within one business day.</p>
+
+                  {formErr && (
+                    <div style={{ background:"#FFF0F0", border:"1px solid #FFB3B3", borderRadius:10, padding:"12px 16px", fontSize:13, color:"#A8302C", display:"flex", gap:8, marginBottom:20 }}>
+                      ⚠ {formErr}
+                    </div>
+                  )}
+
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14, marginBottom:14 }}>
+                    {[
+                      { label:"Your Name", type:"text",  ph:"Jane Smith",     val:name,  set:setName,  k:"name" },
+                      { label:"Email",     type:"email", ph:"jane@biz.com",   val:email, set:setEmail, k:"email" },
+                    ].map(f => (
+                      <div key={f.k} style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                        <label style={{ fontSize:11, fontWeight:600, color:"#AAA", letterSpacing:".06em", textTransform:"uppercase" }}>{f.label}</label>
+                        <input type={f.type} placeholder={f.ph} value={f.val}
+                          onChange={e => { f.set(e.target.value); setFldErr(p => ({ ...p, [f.k]:"" })); }}
+                          disabled={sending} style={inputStyle(fldErr[f.k])}
+                          onFocus={e => e.target.style.borderColor = ROSE}
+                          onBlur={e => e.target.style.borderColor = fldErr[f.k] ? "#e74c3c" : "rgba(192,85,106,.2)"} />
+                        {fldErr[f.k] && <span style={{ fontSize:11, color:"#e74c3c" }}>{fldErr[f.k]}</span>}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{ display:"flex", flexDirection:"column", gap:6, marginBottom:22 }}>
+                    <label style={{ fontSize:11, fontWeight:600, color:"#AAA", letterSpacing:".06em", textTransform:"uppercase" }}>Tell me about your business</label>
+                    <textarea placeholder="I'm a contractor and need help with..." value={msg}
+                      onChange={e => { setMsg(e.target.value); setFldErr(p => ({ ...p, message:"" })); }}
+                      disabled={sending}
+                      style={{ ...inputStyle(fldErr.message), minHeight:130, resize:"vertical" } as React.CSSProperties}
+                      onFocus={e => e.target.style.borderColor = ROSE}
+                      onBlur={e => e.target.style.borderColor = fldErr.message ? "#e74c3c" : "rgba(192,85,106,.2)"} />
+                    {fldErr.message && <span style={{ fontSize:11, color:"#e74c3c" }}>{fldErr.message}</span>}
+                  </div>
+
+                  <button type="submit" disabled={sending} className="btn-hover"
+                    style={{ ...primaryBtn({ width:"100%", justifyContent:"center", borderRadius:14, opacity:sending ? .72 : 1, cursor:sending ? "not-allowed" : "pointer" }) as React.CSSProperties }}>
+                    {sending
+                      ? <><span style={{ width:15, height:15, border:"2px solid rgba(255,255,255,.35)", borderTopColor:"white", borderRadius:"50%", animation:"spin .7s linear infinite", display:"inline-block", flexShrink:0 }} /> Sending…</>
+                      : <>Send Message <ArrowRight size={15} /></>
+                    }
+                  </button>
+                  <p style={{ textAlign:"center", fontSize:12, color:"#CCC", marginTop:12, display:"flex", alignItems:"center", justifyContent:"center", gap:5 }}>
+                    <CheckCircle2 size={12} color={TEAL} /> Quick responses · No spam, ever.
+                  </p>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ NEWSLETTER ══════════ */}
+      <div style={{ background:`linear-gradient(135deg, #2A1A1E 0%, #1A2420 100%)`, padding:"60px 8%" }}>
+        <div style={{ maxWidth:1160, margin:"0 auto", display:"flex", alignItems:"center", justifyContent:"space-between", gap:32, flexWrap:"wrap" }}>
+          <div>
+            <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, fontWeight:300, color:"white", marginBottom:6, letterSpacing:"-.01em" }}>
+              Stay in the loop
+            </h3>
+            <p style={{ fontSize:14, color:"rgba(255,255,255,.5)" }}>Helpful bookkeeping tips, money wins &amp; cheerful updates.</p>
+          </div>
+          {nlOk ? (
+            <div style={{ display:"flex", alignItems:"center", gap:10, color:"rgba(255,255,255,.85)", fontWeight:500, fontSize:14 }}>
+              <CheckCircle2 size={18} color={TEAL} /> You&apos;re subscribed — thank you!
+            </div>
+          ) : (
+            <form onSubmit={sendNl} noValidate style={{ display:"flex", flexDirection:"column", gap:8 }}>
+              <div style={{ display:"flex", background:"rgba(255,255,255,.07)", border:"1px solid rgba(255,255,255,.14)", borderRadius:50, padding:5 }}>
+                <input type="email" placeholder="your@email.com" value={nlEmail}
+                  onChange={e => { setNlEmail(e.target.value); setNlErr(""); }}
+                  disabled={nlBusy}
+                  style={{ background:"transparent", border:"none", color:"white", padding:"10px 18px", fontSize:14, outline:"none", minWidth:220, fontFamily:"'Jost',sans-serif" }} />
+                <button type="submit" disabled={nlBusy}
+                  style={{ background:`linear-gradient(135deg, ${ROSE}, #D4756A)`, color:"white", border:"none", borderRadius:50, padding:"10px 26px", fontSize:13, fontWeight:600, cursor:"pointer", whiteSpace:"nowrap" }}>
+                  {nlBusy ? "Subscribing…" : "Subscribe"}
+                </button>
+              </div>
+              {nlErr && <p style={{ fontSize:12, color:"rgba(255,255,255,.6)", paddingLeft:8 }}>{nlErr}</p>}
+            </form>
+          )}
+        </div>
       </div>
 
-      {/* ── FOOTER ── */}
-      <footer className="bg-ink pt-16 pb-8 px-[8%]">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 mb-[52px]">
-          <div className="sm:col-span-2 md:col-span-1">
-            <Image src="/logo.png" alt="Books by Kimberlie" width={140} height={50}
-              style={{ objectFit: "contain", filter: "brightness(0) invert(1)" }} />
-            <p className="text-sm text-white/35 leading-[1.8] max-w-[260px] my-4">
-              Remote bookkeeping for builders, creatives &amp; businesses. From chaos to calm, one ledger at a time.
-            </p>
-            <div className="flex gap-2.5">
-              {[Facebook, Instagram, Twitter].map((Icon, i) => (
-                <a key={i} href="#"
-                  className="w-9 h-9 rounded-[9px] bg-white/[.07] border border-white/10 flex items-center justify-center text-white/45 hover:bg-rose hover:text-white hover:border-rose transition-all">
-                  <Icon size={15} />
+      {/* ══════════ FOOTER ══════════ */}
+      <footer style={{ background:"#120D0F", padding:"68px 8% 28px" }}>
+        <div style={{ maxWidth:1160, margin:"0 auto" }}>
+          <div className="col-2-sm" style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1.5fr", gap:48, marginBottom:56 }}>
+
+            <div>
+              <Image src="/logo.png" alt="Books by Kimberlie" width={180} height={72}
+                style={{ objectFit:"contain", filter:"brightness(0) invert(1)", marginBottom:16, display:"block" }} />
+              <p style={{ fontSize:13, color:"rgba(255,255,255,.35)", lineHeight:1.88, maxWidth:240, marginBottom:22 }}>
+                Remote bookkeeping for builders, creatives &amp; businesses.<br />
+                From chaos to calm, one ledger at a time.
+              </p>
+              <div style={{ display:"flex", gap:10 }}>
+                {[{ I:Facebook, c:ROSE }, { I:Instagram, c:GOLD }, { I:Linkedin, c:TEAL }].map(({ I:Icon, c }, i) => (
+                  <a key={i} href="#" style={{ width:34, height:34, borderRadius:9, background:`${c}14`, border:`1px solid ${c}30`, display:"flex", alignItems:"center", justifyContent:"center", textDecoration:"none", transition:"transform .2s, background .2s" }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.background = `${c}25`; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = `${c}14`; }}>
+                    <Icon size={14} color={c} />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {[
+              { h:"Services", links:[{ l:"QuickBooks", href:"#services" },{ l:"Payroll", href:"#services" },{ l:"Financial Reports", href:"#services" },{ l:"Cash Flow", href:"#services" }] },
+              { h:"Company",  links:[{ l:"About", href:"#about" },{ l:"How It Works", href:"#process" },{ l:"Reviews", href:"#testimonials" },{ l:"Contact", href:"#contact" }] },
+              { h:"Contact",  links:[{ l:"kimberlie@booksbykimberlie.com", href:"mailto:kimberlie@booksbykimberlie.com" },{ l:"830-515-9818", href:"tel:8305159818" },{ l:"830-730-4160", href:"tel:8307304160" },{ l:"WhatsApp", href:"#contact" }] },
+            ].map(col => (
+              <div key={col.h}>
+                <div style={{ fontSize:10, fontWeight:600, letterSpacing:".14em", textTransform:"uppercase", color:ROSE, marginBottom:18 }}>{col.h}</div>
+                <ul style={{ listStyle:"none", display:"flex", flexDirection:"column", gap:10 }}>
+                  {col.links.map(l => (
+                    <li key={l.l}>
+                      <a href={l.href} style={{ fontSize:13, color:"rgba(255,255,255,.38)", textDecoration:"none", transition:"color .2s" }}
+                        onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,.8)"}
+                        onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,.38)"}>
+                        {l.l}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ borderTop:"1px solid rgba(255,255,255,.06)", paddingTop:24, display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
+            <span style={{ fontSize:12, color:"rgba(255,255,255,.2)" }}>© {new Date().getFullYear()} Books by Kimberlie. All rights reserved.</span>
+            <div style={{ display:"flex", gap:24 }}>
+              {["Privacy Policy", "Terms of Service"].map(l => (
+                <a key={l} href="#" style={{ fontSize:12, color:"rgba(255,255,255,.2)", textDecoration:"none", transition:"color .2s" }}
+                  onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,.55)"}
+                  onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,.2)"}>
+                  {l}
                 </a>
               ))}
             </div>
           </div>
-
-          {[
-            { h: "Services", links: ["QuickBooks", "Payroll", "Financial Reports", "Cash Flow"] },
-            { h: "Company",  links: ["About", "How It Works", "Reviews", "Contact"] },
-            { h: "Contact",  links: ["kimberlie@booksbykimberlie.com", "830-515-9818", "830-730-4160", "WhatsApp"] },
-          ].map(col => (
-            <div key={col.h}>
-              <div className="text-[11px] font-medium tracking-[.1em] uppercase text-white/[.28] mb-[18px]">{col.h}</div>
-              <ul className="flex flex-col gap-[11px]">
-                {col.links.map(l => (
-                  <li key={l}><a href="#" className="text-sm text-white/[.48] hover:text-white transition-colors">{l}</a></li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div className="border-t border-white/[.06] pt-7 flex flex-wrap justify-between items-center gap-3.5">
-          <p className="text-[13px] text-white/20">© {new Date().getFullYear()} Books by Kimberlie. All rights reserved.</p>
-          <div className="flex gap-6">
-            {["Privacy Policy", "Terms of Service"].map(l => (
-              <a key={l} href="#" className="text-[13px] text-white/[.22] hover:text-white/60 transition-colors">{l}</a>
-            ))}
-          </div>
         </div>
       </footer>
+
     </div>
   );
 }
