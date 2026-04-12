@@ -352,7 +352,7 @@ export default function Page() {
       {drawer && (
         <div style={{ position:"fixed", inset:0, zIndex:400, display:"flex", flexDirection:"column", padding:"32px 7%", background:"linear-gradient(160deg, #2A1A1E 0%, #1E2820 100%)" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", paddingBottom:28, borderBottom:"1px solid rgba(255,255,255,.08)", marginBottom:32 }}>
-            <Image src="/logo.png" alt="Books by Kimberlie" width={180} height={72} style={{ objectFit:"contain", height:64 }} />
+            <Image src="/logo.png" alt="Books by Kimberlie" width={180} height={72} style={{ objectFit:"contain", height:154 }} />
             <button onClick={() => setDrawer(false)} style={{ background:"rgba(255,255,255,.08)", border:"none", borderRadius:"50%", width:42, height:42, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"white" }}>
               <X size={20} />
             </button>
@@ -376,13 +376,13 @@ export default function Page() {
       <header style={{
         position:"fixed", top:0, left:0, right:0, zIndex:200,
         display:"flex", alignItems:"center", justifyContent:"space-between",
-        padding:"0 6%", height:92,
+        padding:"0 6%", height:"250px",
         background: scrolled ? "rgba(255,252,247,.97)" : "transparent",
         backdropFilter: scrolled ? "blur(20px)" : "none",
         boxShadow: scrolled ? "0 1px 0 rgba(192,85,106,.1), 0 4px 32px rgba(30,26,24,.05)" : "none",
         transition:"background .3s, box-shadow .3s",
       }}>
-        <Image src="/logo.png" alt="Books by Kimberlie" width={460} height={204} style={{ objectFit:"contain", height:88, width:"auto" }} />
+        <Image src="/logo.png" alt="Books by Kimberlie" width={460} height={204} style={{ objectFit:"contain", height:"200px", width:"auto" }} />
 
         <nav className="hide-sm" style={{ display:"flex", alignItems:"center", gap:28 }}>
           {NAV.map(l => (
@@ -403,7 +403,7 @@ export default function Page() {
       </header>
 
       {/* ══════════ HERO ══════════ */}
-      <section id="home" className="hero-sect" style={{
+      <section id="home" className="hero-sect mt-56" style={{
         minHeight:"100vh", display:"grid", gridTemplateColumns:"1fr 1fr",
         position:"relative", overflow:"hidden", paddingTop:80,
         background:`linear-gradient(140deg, #FDF6F8 0%, ${IVORY} 45%, #F4F9F7 100%)`,
@@ -864,7 +864,7 @@ export default function Page() {
           <div className="col-2-sm" style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1.5fr", gap:48, marginBottom:56 }}>
 
             <div>
-              <Image src="/logo.png" alt="Books by Kimberlie" width={180} height={72}
+              <Image src="/logo.png" alt="Books by Kimberlie" width={180} height={152}
                 style={{ objectFit:"contain", filter:"brightness(0) invert(1)", marginBottom:16, display:"block" }} />
               <p style={{ fontSize:13, color:"rgba(255,255,255,.35)", lineHeight:1.88, maxWidth:240, marginBottom:22 }}>
                 Remote bookkeeping for builders, creatives &amp; businesses.<br />
