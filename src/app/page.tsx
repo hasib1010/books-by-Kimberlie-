@@ -246,10 +246,7 @@ export default function Page() {
     e.currentTarget.style.boxShadow = in_ ? "0 20px 48px rgba(30,26,24,.1)" : "0 4px 32px rgba(30,26,24,.05)";
   };
 
-  const hoverBtn = (e: React.MouseEvent<HTMLElement>, in_: boolean) => {
-    e.currentTarget.style.transform = in_ ? "translateY(-2px)" : "translateY(0)";
-    e.currentTarget.style.boxShadow = in_ ? `0 16px 40px ${ROSE}45` : `0 8px 32px ${ROSE}35`;
-  };
+  
 
   const avatarRow = (srcs: string[]) => (
     <div style={{ display:"flex" }}>
