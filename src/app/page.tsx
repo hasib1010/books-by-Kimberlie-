@@ -7,7 +7,7 @@ import {
   ArrowRight, CheckCircle2, TrendingUp, Shield, Clock,
   BarChart3, Star, Mail, Phone, MessageCircle,
   Instagram, Facebook, Linkedin, Sparkles, ChevronDown, Menu, X,
-  FileText, CreditCard, Receipt, BookOpen,
+  FileText, CreditCard, Receipt,  
 } from "lucide-react";
 
 /* ────────────────────────────────────────
