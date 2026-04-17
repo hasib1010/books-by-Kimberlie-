@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -14,12 +14,12 @@ import {
    DATA
 ──────────────────────────────────────── */
 const SERVICES = [
-  { num: "01", title: "QuickBooks", img: "/quickbooks.png", accent: "#C0556A", bg: "#FDF4F6", icon: BarChart3, desc: "Expert setup and ongoing management so your books stay accurate, clean, and always tax-ready." },
-  { num: "02", title: "Payroll", img: "/payroll.png", accent: "#3A9E8F", bg: "#F0F9F7", icon: Clock, desc: "On-time, every time. Smooth payroll runs so your team gets paid correctly and you stay compliant." },
-  { num: "03", title: "Financial Reports", img: "/reports.png", accent: "#B07D3A", bg: "#FBF6EE", icon: TrendingUp, desc: "Clear, actionable reports showing exactly where your cash is going — and where it should be." },
-  { num: "04", title: "Accounts Payable", img: "/payable.png", accent: "#7E6BA8", bg: "#F5F2FA", icon: CreditCard, desc: "Stay on top of every bill and vendor payment. We track, schedule, and manage what you owe so nothing slips through." },
-  { num: "05", title: "Accounts Receivable", img: "/recivable.png", accent: "#C0556A", bg: "#FDF4F6", icon: Receipt, desc: "Get paid faster. We manage your invoices, follow up on outstanding balances, and keep your cash flowing in." },
-  { num: "06", title: "Payment Processing", img: "/processing.png", accent: "#3A9E8F", bg: "#F0F9F7", icon: FileText, desc: "Accurate recording and reconciliation of every transaction — bank feeds, credit cards, and payments all in sync." },
+  { title: "QuickBooks", img: "/quickbooks.png", accent: "#C0556A", bg: "#FDF4F6", icon: BarChart3, desc: "Expert setup and ongoing management so your books stay accurate, clean, and always tax-ready." },
+  { title: "Payroll", img: "/payroll.png", accent: "#3A9E8F", bg: "#F0F9F7", icon: Clock, desc: "On-time, every time. Smooth payroll runs so your team gets paid correctly and you stay compliant." },
+  { title: "Financial Reports", img: "/reports.png", accent: "#B07D3A", bg: "#FBF6EE", icon: TrendingUp, desc: "Clear, actionable reports showing exactly where your cash is going — and where it should be." },
+  { title: "Accounts Payable", img: "/payable.png", accent: "#7E6BA8", bg: "#F5F2FA", icon: CreditCard, desc: "Stay on top of every bill and vendor payment. We track, schedule, and manage what you owe so nothing slips through." },
+  { title: "Accounts Receivable", img: "/recivable.png", accent: "#C0556A", bg: "#FDF4F6", icon: Receipt, desc: "Get paid faster. We manage your invoices, follow up on outstanding balances, and keep your cash flowing in." },
+  { title: "Payment Processing", img: "/processing.png", accent: "#3A9E8F", bg: "#F0F9F7", icon: FileText, desc: "Accurate recording and reconciliation of every transaction — bank feeds, credit cards, and payments all in sync." },
 ];
 
 const BOOKKEEPING_SERVICES = [
@@ -38,7 +38,7 @@ const BOOKKEEPING_SERVICES = [
 ];
 
 const WHY = [
-  { icon: Shield, c: "#C0556A", bg: "#FDF4F6", title: "Controller/CFO Experience", desc: "Built accounting systems from scratch for hotels, construction firms, tech startups, and banks." },
+  { icon: Shield, c: "#C0556A", bg: "#FDF4F6", title: "Controller/CFO Experience", desc: "Provided senior accounting leadership for decades, guiding businesses from $100,000 startups to multi-million-dollar companies with confidence, precision, and strategic financial oversight." },
   { icon: Clock, c: "#3A9E8F", bg: "#F0F9F7", title: "Proven Across Industries", desc: "Construction job costing, hospitality revenue management, banking compliance, and tech payroll scaling." },
   { icon: TrendingUp, c: "#B07D3A", bg: "#FBF6EE", title: "QuickBooks Specialist", desc: "Setup, cleanup, automation, and monthly maintenance that actually saves you time and headaches." },
   { icon: Sparkles, c: "#7E6BA8", bg: "#F5F2FA", title: "GAAP-Compliant Reporting", desc: "P&L, Balance Sheet, cash flow your CPA will love and you will actually understand." },
@@ -52,83 +52,221 @@ const STEPS = [
 ];
 
 const TESTI = [
-  { q: "Kimberlie brought clarity to my chaotic finances — now I actually enjoy reviewing my numbers each month.", name: "Alex M.", role: "Contractor, Vermont", img: "/client1.jpg", c: "#C0556A" },
-  { q: "She made my accounting stress completely disappear. Highly professional and genuinely easy to work with.", name: "Sarah T.", role: "Freelance Designer", img: "/client2.jpg", c: "#3A9E8F" },
-  { q: "Finally a bookkeeper who explains things in plain English. I feel confident about my finances for the first time.", name: "David R.", role: "Restaurant Owner", img: "/client3.jpg", c: "#B07D3A" },
-];
+  {
+    q: "Books by Kimberlie has been a game changer for our construction business. Kimberlie understands construction accounting, keeps our books accurate and current, and gives us clear financial insight to make better decisions. She is timely, dependable, and quick to solve problems, bringing professionalism and peace of mind every step of the way. Five stars.",
+    name: "VR Construction",
+    role: "Construction",
+    img: "/construction.png",
+    c: "#B07D3A",
+    logo: true,
+  },
+  {
+    q: "Kimberlie makes our accounting easy and simple. She tracks money in and out perfect, keeps books clean, and helps us run better. Always positive and pro—best partner for our business!",
+    name: "Innovative Plastering",
+    role: "Plastering",
+    img: "/innovative%20plusturing.png",
+    c: "#3A9E8F",
+    logo: true,
+  },
+  {
+    variant: "expand" as const,
+    preview:
+      "Books by Kimberlie provides exceptional accounting for our complex, high-volume operations at 1to1 Plans, where credit card transactions, multi-channel payments, and tech-construction revenue streams demand precision and adaptability.",
+    strengths: [
+      "Expertly manages high-volume credit card/digital transactions with flawless categorization and reconciliation.",
+      "Organizes layered revenue models for clear structure across client payments.",
+      "Delivers seamless systems integration across platforms, ensuring efficient alignment.",
+      "Produces timely, insightful financial reports that drive confident decisions.",
+    ],
+    closing:
+      "Kimberlie’s proactive communication, calm professionalism, and forward-thinking support resolve issues before they escalate, building total trust. She transforms fragmented financials into a streamlined, reliable system—ideal for tech-construction hybrids.",
+    name: "1to1 Plans",
+    role: "New Braunfels, TX",
+    img: "/1tolplans.png",
+    c: "#7E6BA8",
+    logo: true,
+  },
+  {
+    variant: "expand" as const,
+    preview:
+      "Bespoke Fine Homes partnered with Books by Kimberlie six months ago for our custom home building and small commercial construction accounting needs. From day one, Kimberlie brought exceptional clarity, structure, and confidence to this intricate and demanding area of our business.",
+    strengths: [
+      "Unmatched accuracy: meticulous financial preparation and organization ensure total confidence in our numbers.",
+      "Job costing expertise: masterful tracking of budgets, allocations, and real-time project costs across every job.",
+      "Actionable reporting: timely, insightful reports that guide decisions and keep projects financially on track.",
+    ],
+    closing:
+      "Kimberlie’s proactive communication, unwavering responsiveness, and solution-focused approach keep us informed and supported. Her calm professionalism and positive attitude transform overwhelming accounting challenges into a streamlined, enjoyable process—making her a trusted team extension.",
+    name: "Bespoke Fine Homes",
+    role: "Custom home building",
+    img: "/bespokefinehomes.png",
+    c: "#C0556A",
+    logo: true,
+  },
+] as const;
 
-const TICKER = ["QuickBooks Setup", "Payroll Processing", "Financial Reports", "Accounts Payable", "Accounts Receivable", "Payment Processing", "Cash Flow Forecasting", "Tax Prep Support", "Remote Bookkeeping", "30+ Years Experience"];
-const NAV = ["About", "Services", "Process", "Contact"];
+type TestimonialRow = (typeof TESTI)[number];
 
-/* ── LOTTIE COIN RAIN ── */
-function GoldCoinShower() {
-  const ref = useRef<HTMLDivElement>(null);
+/** Real client marks for hero / about “trusted by” rows */
+const CLIENT_LOGOS = [
+  { src: "/construction.png", alt: "VR Construction" },
+  { src: "/innovative%20plusturing.png", alt: "Innovative Plastering" },
+  { src: "/1tolplans.png", alt: "1to1 Plans" },
+  { src: "/bespokefinehomes.png", alt: "Bespoke Fine Homes" },
+] as const;
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let anim: any = null;
-
-    import("lottie-web").then((mod) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const lottie: any = mod.default ?? mod;
-
-      anim = lottie.loadAnimation({
-        container: el,
-        renderer: "svg",
-        loop: true,
-        autoplay: true,
-        path: "/money_falling.json",
-        rendererSettings: {
-          preserveAspectRatio: "xMidYMid slice",
-          progressiveLoad: false,
-          hideOnTransparent: false,
-        },
-      });
-
-      anim.setSpeed(0.75);
-
-      anim.addEventListener("complete", () => {
-        anim.goToAndPlay(0, true);
-      });
-
-      anim.addEventListener("loopComplete", () => {
-        if (!anim.isPaused) return;
-        anim.goToAndPlay(0, true);
-      });
-    });
-
-    const onVisible = () => {
-      if (document.visibilityState === "visible" && anim && anim.isPaused) {
-        anim.play();
-      }
-    };
-    document.addEventListener("visibilitychange", onVisible);
-
-    return () => {
-      document.removeEventListener("visibilitychange", onVisible);
-      anim?.destroy();
-    };
-  }, []);
-
+function ClientLogoMarks({ size = 56 }: { size?: number }) {
+  const pad = Math.max(5, Math.round(size * 0.14));
   return (
-    <div
-      ref={ref}
-      style={{
-        position: "absolute",
-        inset: 0,
-        width: "100%",
-        height: "100%",
-        pointerEvents: "none",
-        zIndex: 0,
-        opacity: 0.55,
-      }}
-    />
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
+      {CLIENT_LOGOS.map((logo) => (
+        <div
+          key={logo.src}
+          style={{
+            position: "relative",
+            width: size,
+            height: size,
+            borderRadius: 14,
+            overflow: "hidden",
+            background: "#fff",
+            border: "1px solid rgba(30,26,24,.1)",
+            boxShadow: "0 2px 12px rgba(30,26,24,.07)",
+            flexShrink: 0,
+          }}
+        >
+          <Image
+            src={logo.src}
+            alt={logo.alt}
+            fill
+            sizes={`${size}px`}
+            style={{ objectFit: "contain", objectPosition: "center", padding: pad }}
+          />
+        </div>
+      ))}
+    </div>
   );
 }
 
+const NAV = ["About", "Services", "Process", "Contact"];
+
+function TestimonialCard({
+  t,
+  starRow,
+  cardBase,
+  INK,
+}: {
+  t: TestimonialRow;
+  starRow: (n?: number, sz?: number) => React.ReactNode;
+  cardBase: (extra?: React.CSSProperties) => React.CSSProperties;
+  INK: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const isExpand = "variant" in t && t.variant === "expand";
+  const logo = "logo" in t && t.logo === true;
+  const c = t.c;
+
+  return (
+    <div
+      className="card-hover"
+      style={{ ...cardBase({ padding: "28px 26px 26px", overflow: "hidden", position: "relative" }), cursor: "default" }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: 16,
+          right: 20,
+          fontFamily: "'Cormorant Garamond',serif",
+          fontSize: 72,
+          color: c,
+          opacity: 0.07,
+          lineHeight: 1,
+          pointerEvents: "none",
+          userSelect: "none",
+        }}
+      >
+        &ldquo;
+      </div>
+      {logo && (
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            width: "100%",
+            minHeight: 100,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 18,
+            background: "linear-gradient(180deg, #FAFAF9 0%, #FFFFFF 55%)",
+            borderRadius: 18,
+            border: `1px solid ${c}35`,
+            boxShadow: `inset 0 1px 0 rgba(255,255,255,.9)`,
+            padding: "18px 22px",
+          }}
+        >
+          <div style={{ position: "relative", width: "100%", height: 84, maxWidth: 280 }}>
+            <Image
+              src={t.img}
+              alt={`${t.name} logo`}
+              fill
+              sizes="(max-width:768px) 90vw, 280px"
+              style={{ objectFit: "contain", objectPosition: "center" }}
+            />
+          </div>
+        </div>
+      )}
+      {starRow(5, 13)}
+      {isExpand ? (
+        <div style={{ position: "relative", zIndex: 1, margin: "16px 0 24px" }}>
+          <p style={{ fontSize: 14, color: "#666", lineHeight: 1.88, fontStyle: "italic", marginBottom: open ? 14 : 10 }}>
+            &ldquo;{t.preview}&rdquo;
+          </p>
+          {open && (
+            <>
+              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: ".12em", textTransform: "uppercase", color: "#AAA", marginBottom: 10 }}>
+                Key strengths
+              </div>
+              <ul style={{ margin: "0 0 16px 18px", padding: 0, fontSize: 13, color: "#555", lineHeight: 1.75 }}>
+                {t.strengths.map((s, i) => (
+                  <li key={i} style={{ marginBottom: 8 }}>{s}</li>
+                ))}
+              </ul>
+              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: ".12em", textTransform: "uppercase", color: "#AAA", marginBottom: 10 }}>
+                Client experience
+              </div>
+              <p style={{ fontSize: 13, color: "#666", lineHeight: 1.82, marginBottom: 14 }}>{t.closing}</p>
+            </>
+          )}
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              fontSize: 13,
+              fontWeight: 600,
+              color: c,
+              cursor: "pointer",
+              textDecoration: "underline",
+              textUnderlineOffset: 3,
+            }}
+          >
+            {open ? "Show less" : "Read more"}
+          </button>
+        </div>
+      ) : "q" in t ? (
+        <p style={{ fontSize: 14, color: "#666", lineHeight: 1.88, fontStyle: "italic", margin: "16px 0 24px", position: "relative", zIndex: 1 }}>
+          &ldquo;{t.q}&rdquo;
+        </p>
+      ) : null}
+      <div style={{ borderTop: "1px solid rgba(30,26,24,.07)", paddingTop: 18, marginTop: 4 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: INK, letterSpacing: ".01em" }}>{t.name}</div>
+        <div style={{ fontSize: 12, color: "#999", marginTop: 4, letterSpacing: ".02em", lineHeight: 1.45 }}>{t.role}</div>
+      </div>
+    </div>
+  );
+}
 
 /* ────────────────────────────────────────
    PAGE
@@ -262,16 +400,6 @@ export default function Page() {
     e.currentTarget.style.boxShadow = in_ ? "0 20px 48px rgba(30,26,24,.1)" : "0 4px 32px rgba(30,26,24,.05)";
   };
 
-  const avatarRow = (srcs: string[]) => (
-    <div style={{ display: "flex" }}>
-      {srcs.map((src, i) => (
-        <div key={i} style={{ position: "relative", width: 38, height: 38, borderRadius: "50%", overflow: "hidden", border: "2.5px solid white", marginLeft: i ? -12 : 0, zIndex: srcs.length - i, flexShrink: 0 }}>
-          <Image src={src} alt="" fill style={{ objectFit: "cover", borderRadius: "50%" }} />
-        </div>
-      ))}
-    </div>
-  );
-
   const starRow = (n = 5, sz = 13) => (
     <div style={{ display: "flex", gap: 2 }}>
       {[...Array(n)].map((_, i) => <Star key={i} size={sz} fill="#D4A843" color="#D4A843" />)}
@@ -293,10 +421,6 @@ export default function Page() {
         ::-webkit-scrollbar-thumb { background:rgba(192,85,106,.25); border-radius:3px; }
         ::selection { background:rgba(192,85,106,.15); }
 
-        .tk { animation: tkMove 60s linear infinite; display:flex; width:max-content; }
-        .tk:hover { animation-play-state:paused; }
-        @keyframes tkMove { from{transform:translateX(0)} to{transform:translateX(-33.333%)} }
-
         @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
         @keyframes floatB { 0%,100%{transform:translateY(0)} 50%{transform:translateY(10px)} }
         @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.55;transform:scale(.78)} }
@@ -309,6 +433,28 @@ export default function Page() {
         .btn-hover:hover { transform:translateY(-2px) !important; box-shadow:0 16px 40px rgba(192,85,106,.42) !important; }
         .link-hover:hover { opacity:.7; }
 
+        .testimonial-grid {
+          display: grid;
+          gap: 20px;
+          grid-template-columns: 1fr;
+        }
+        @media (min-width: 900px) {
+          .testimonial-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        .service-card-media {
+          width: 100%;
+          overflow: hidden;
+          line-height: 0;
+        }
+        .service-card-media img {
+          width: 100% !important;
+          height: auto !important;
+          max-height: none !important;
+          display: block;
+          object-fit: contain;
+        }
+
         @media(max-width:768px) {
           .hide-sm   { display:none !important; }
           .show-sm   { display:flex !important; }
@@ -316,6 +462,10 @@ export default function Page() {
           .col-2-sm  { grid-template-columns:1fr 1fr !important; }
           .col-3-sm  { grid-template-columns:1fr 1fr !important; }
           .sec-pad   { padding:72px 6% !important; }
+          .services-sec.sec-pad {
+            padding-left: max(12px, 4vw) !important;
+            padding-right: max(12px, 4vw) !important;
+          }
 
           .hero-sect {
             grid-template-columns: 1fr !important;
@@ -358,7 +508,7 @@ export default function Page() {
             <button onClick={() => setDrawer(false)} style={{ background: "rgba(255,255,255,.08)", border: "none", borderRadius: "50%", width: 42, height: 42, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "white" }}>
               <X size={20} />
             </button>
-          </div>
+        </div>
           <nav style={{ display: "flex", flexDirection: "column" }}>
             {NAV.map(l => (
               <a key={l} href={`#${l.toLowerCase()}`} onClick={() => setDrawer(false)}
@@ -369,9 +519,9 @@ export default function Page() {
           </nav>
           <a href="#contact" onClick={() => setDrawer(false)}
             style={{ ...primaryBtn({ marginTop: 36, alignSelf: "flex-start" }) }}>
-            Get Started <ArrowRight size={15} />
-          </a>
-        </div>
+          Get Started <ArrowRight size={15} />
+        </a>
+      </div>
       )}
 
       {/* ══════════ NAV ══════════ */}
@@ -435,15 +585,15 @@ export default function Page() {
           </p>
 
           {/* social proof */}
-          <div className="hero-proof" style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28 }}>
-            {avatarRow(["/client1.jpg", "/client2.jpg", "/client3.jpg"])}
+          <div className="hero-proof" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, marginBottom: 28 }}>
+            <ClientLogoMarks size={56} />
             <div>
               {starRow(5, 12)}
               <span style={{ fontSize: 13, color: "#888", marginTop: 3, display: "block" }}>
                 <strong style={{ color: INK }}>200+ clients</strong> trust Kimberlie
               </span>
+                </div>
             </div>
-          </div>
 
           {/* CTAs */}
           <div className="hero-btns" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 44 }}>
@@ -455,7 +605,7 @@ export default function Page() {
               onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(30,26,24,.22)"; e.currentTarget.style.color = INK; }}>
               See My Services
             </a>
-          </div>
+              </div>
 
           {/* Stats */}
           <div className="col-2-sm" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
@@ -470,8 +620,8 @@ export default function Page() {
                 <div style={{ fontSize: 10, fontWeight: 500, color: "#AAA", letterSpacing: ".04em", lineHeight: 1.4 }}>{s.l}</div>
               </div>
             ))}
+            </div>
           </div>
-        </div>
 
         {/* RIGHT — hero photo */}
         <div className="hide-sm" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 6% 60px 2%", position: "relative", zIndex: 2 }}>
@@ -484,12 +634,12 @@ export default function Page() {
           <div style={{ position: "absolute", top: "14%", left: "0%", background: "white", borderRadius: 20, padding: "14px 18px", display: "flex", alignItems: "center", gap: 11, boxShadow: "0 12px 48px rgba(30,26,24,.1)", animation: "floatA 4.5s ease-in-out infinite" }}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: `${TEAL}18`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <CheckCircle2 size={18} color={TEAL} />
-            </div>
+              </div>
             <div>
               <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".1em", textTransform: "uppercase", color: "#BBB", marginBottom: 2 }}>Books Status</div>
               <div style={{ fontSize: 13, fontWeight: 600, color: TEAL }}>All Up to Date ✓</div>
-            </div>
           </div>
+        </div>
 
           {/* Floating cash flow card */}
           <div style={{ position: "absolute", bottom: "12%", right: "3%", background: "white", borderRadius: 20, padding: "16px 20px", boxShadow: "0 12px 48px rgba(30,26,24,.1)", minWidth: 190, animation: "floatB 5.5s ease-in-out infinite" }}>
@@ -497,25 +647,12 @@ export default function Page() {
             <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 30, fontWeight: 600, color: ROSE, lineHeight: 1 }}>$12,480</div>
             <div style={{ fontSize: 11, fontWeight: 600, color: TEAL, marginTop: 5 }}>↑ 18% vs last month</div>
           </div>
-        </div>
+          </div>
 
         <div style={{ position: "absolute", bottom: 20, left: "50%", color: ROSE, animation: "cue 2.4s ease-in-out infinite", opacity: .6 }}>
-          <ChevronDown size={22} />
+            <ChevronDown size={22} />
         </div>
       </section>
-
-      {/* ══════════ TICKER ══════════ */}
-      <div style={{ overflow: "hidden", padding: "13px 0", background: `linear-gradient(90deg, ${ROSE} 0%, #C97060 30%, ${TEAL} 65%, #5B8FA8 100%)` }}>
-        <div className="tk">
-          {[...Array(4)].map((_, r) =>
-            TICKER.map((t, i) => (
-              <span key={`${r}-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: 10, paddingRight: 36, fontSize: 10.5, fontWeight: 600, letterSpacing: ".16em", textTransform: "uppercase", color: "white", whiteSpace: "nowrap" }}>
-                <span style={{ width: 4, height: 4, borderRadius: "50%", background: "rgba(255,255,255,.55)", flexShrink: 0 }} />{t}
-              </span>
-            ))
-          )}
-        </div>
-      </div>
 
       {/* ══════════ ABOUT ══════════ */}
       <section id="about" className="sec-pad" style={{ padding: "108px 8%", background: IVORY }}>
@@ -532,12 +669,12 @@ export default function Page() {
                 <div style={{ position: "absolute", bottom: 24, left: 24, background: `linear-gradient(135deg, ${ROSE}, #D4756A)`, borderRadius: 18, padding: "12px 20px", color: "white" }}>
                   <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 30, fontWeight: 600, lineHeight: 1 }}>30+</div>
                   <div style={{ fontSize: 11, opacity: .9, marginTop: 3, letterSpacing: ".04em" }}>Years of Experience</div>
-                </div>
-              </div>
+        </div>
+      </div>
 
               {/* Trust strip */}
               <div style={{ ...cardBase({ padding: "16px 20px" }), display: "flex", alignItems: "center", gap: 14 }}>
-                {avatarRow(["/client1.jpg", "/client2.jpg", "/client3.jpg"])}
+                <ClientLogoMarks size={50} />
                 <div>
                   {starRow(5, 12)}
                   <div style={{ fontSize: 12, color: "#888", marginTop: 3 }}>Trusted by 200+ business owners</div>
@@ -558,8 +695,8 @@ export default function Page() {
               <h2 style={displayTitle()}>
                 Hi, I&apos;m Kimberlie —<br />
                 <em style={{ color: ROSE, fontStyle: "italic" }}>your financial calm</em><br />
-                in the storm.
-              </h2>
+              in the storm.
+            </h2>
 
               <p style={{ ...body(), marginBottom: 14 }}>
                 With 30+ years of hands-on experience across construction, hospitality, banking, tech, and service industries,
@@ -587,16 +724,16 @@ export default function Page() {
                     <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
                       <CheckCircle2 size={14} color={TEAL} style={{ flexShrink: 0, marginTop: 2 }} />
                       <span style={{ fontSize: 13, color: "#555", lineHeight: 1.65 }}>{pt}</span>
-                    </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
+              </div>
               </div>
 
               <a href="#contact" className="btn-hover" style={primaryBtn({ alignSelf: "flex-start" }) as React.CSSProperties}>
                 Book a Free Call <ArrowRight size={15} />
               </a>
-            </div>
           </div>
+        </div>
 
           {/* Why choose */}
           <div style={{ background: MIST, borderRadius: 32, padding: "52px 30px" }}>
@@ -605,7 +742,7 @@ export default function Page() {
               <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(26px,2.8vw,38px)", fontWeight: 300, lineHeight: 1.15, letterSpacing: "-.02em", color: INK }}>
                 Four reasons clients <em style={{ color: ROSE, fontStyle: "italic" }}>keep coming back</em>
               </h3>
-            </div>
+                </div>
             <div className="col-2-sm" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 20 }}>
               {WHY.map(w => (
                 <div key={w.title} style={{ background: "white", border: `1px solid ${w.c}18`, borderRadius: 22, padding: "26px 20px", transition: "transform .25s, box-shadow .25s", cursor: "default" }}
@@ -613,18 +750,18 @@ export default function Page() {
                   onMouseLeave={e => hoverLift(e as unknown as React.MouseEvent<HTMLElement>, false)}>
                   <div style={{ width: 44, height: 44, borderRadius: 13, background: w.bg, border: `1px solid ${w.c}30`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
                     <w.icon size={20} color={w.c} />
-                  </div>
+                </div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: INK, marginBottom: 8, letterSpacing: ".01em" }}>{w.title}</div>
                   <div style={{ fontSize: 13, color: "#888", lineHeight: 1.72 }}>{w.desc}</div>
-                </div>
-              ))}
+              </div>
+            ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* ══════════ SERVICES ══════════ */}
-      <section id="services" className="sec-pad" style={{ padding: "108px 8%", background: "white" }}>
+      <section id="services" className="sec-pad services-sec" style={{ padding: "108px 8%", background: "white" }}>
         <div style={{ maxWidth: 1160, margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 24, marginBottom: 56 }}>
             <div>
@@ -641,15 +778,21 @@ export default function Page() {
           <div className="col-3-sm" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 22, marginBottom: 64 }}>
             {SERVICES.map(s => (
               <div key={s.title} className="card-hover" style={{ ...cardBase({ overflow: "hidden" }), cursor: "default" }}>
-                <div style={{ position: "relative", height: 214, background: s.bg }}>
-                  <Image src={s.img} alt={s.title} fill style={{ objectFit: "contain", padding: 20 }} />
-                  <span style={{ position: "absolute", bottom: 6, right: 14, fontFamily: "'Cormorant Garamond',serif", fontSize: 52, fontWeight: 600, color: s.accent, opacity: .09, lineHeight: 1, pointerEvents: "none", userSelect: "none" }}>{s.num}</span>
-                </div>
-                <div style={{ padding: "26px 28px 30px" }}>
-                  <div style={{ height: 2, width: 40, borderRadius: 1, background: s.accent, marginBottom: 16, opacity: .7 }} />
-                  <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 25, fontWeight: 400, color: INK, marginBottom: 10, letterSpacing: "-.01em" }}>{s.title}</h3>
+                <div className="service-card-media" style={{ background: s.bg }}>
+                  <Image
+                    src={s.img}
+                    alt={s.title}
+                    width={800}
+                    height={480}
+                    sizes="(max-width:768px) 50vw, 360px"
+                    style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }}
+                  />
+                  </div>
+                <div style={{ padding: "18px 22px 22px" }}>
+                  <div style={{ height: 2, width: 40, borderRadius: 1, background: s.accent, marginBottom: 10, opacity: .7 }} />
+                  <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 25, fontWeight: 400, color: INK, marginBottom: 8, letterSpacing: "-.01em" }}>{s.title}</h3>
                   <p style={{ fontSize: 13, color: "#888", lineHeight: 1.82 }}>{s.desc}</p>
-                  <Link href="#contact" className="link-hover" style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, fontWeight: 600, color: s.accent, textDecoration: "none", marginTop: 18, letterSpacing: ".03em", transition: "opacity .2s" }}>
+                  <Link href="#contact" className="link-hover" style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, fontWeight: 600, color: s.accent, textDecoration: "none", marginTop: 12, letterSpacing: ".03em", transition: "opacity .2s" }}>
                     Learn more <ArrowRight size={12} />
                   </Link>
                 </div>
@@ -668,7 +811,7 @@ export default function Page() {
                 <p style={{ fontSize: 13, color: "#888", lineHeight: 1.8 }}>
                   Whether you need a full-service bookkeeper or just help getting caught up, I&apos;ve got you covered.
                 </p>
-              </div>
+                </div>
               <div style={{ flex: 1, minWidth: 280 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "10px 24px" }}>
                   {BOOKKEEPING_SERVICES.map((item, i) => (
@@ -684,20 +827,18 @@ export default function Page() {
         </div>
       </section>
 
-      {/* ══════════ PROCESS — gold coin shower ══════════ */}
+      {/* ══════════ PROCESS ══════════ */}
       <section id="process" className="sec-pad" style={{ padding: "108px 8%", position: "relative", overflow: "hidden", background: `linear-gradient(140deg, #FBF7F0 0%, #F7F0F3 100%)` }}>
-        <GoldCoinShower />
-
         <div style={{ maxWidth: 1160, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <div style={{ textAlign: "center", marginBottom: 64 }}>
             <div style={{ ...eyebrow(GOLD), textAlign: "center" }}>The Process</div>
             <h2 style={{ ...displayTitle({ textAlign: "center", marginBottom: 14 }) }}>
               Simple from <em style={{ color: ROSE, fontStyle: "italic" }}>start to finish</em>
-            </h2>
-            <p style={{ ...body({ textAlign: "center" }), maxWidth: 400, margin: "0 auto" }}>
-              No accounting jargon. No confusing meetings. Just four clear steps to financial peace.
+              </h2>
+            <p style={{ ...body({ textAlign: "center" }), maxWidth: 520, margin: "0 auto" }}>
+              Straightforward support tailored to your business. No confusion—just clear guidance and dependable results.
             </p>
-          </div>
+            </div>
 
           <div className="col-2-sm" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 20 }}>
             {STEPS.map((s, i) => (
@@ -710,7 +851,7 @@ export default function Page() {
                 )}
                 <h4 style={{ fontSize: 15, fontWeight: 600, color: INK, marginBottom: 10, letterSpacing: ".01em" }}>{s.title}</h4>
                 <p style={{ fontSize: 13, color: "#888", lineHeight: 1.78 }}>{s.desc}</p>
-              </div>
+                  </div>
             ))}
           </div>
         </div>
@@ -720,37 +861,22 @@ export default function Page() {
       <section id="testimonials" className="sec-pad" style={{ padding: "108px 8%", background: IVORY }}>
         <div style={{ maxWidth: 1160, margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 20, marginBottom: 56 }}>
-            <div>
+                  <div>
               <div style={eyebrow()}>Client Stories</div>
               <h2 style={displayTitle()}>
                 What clients<br />
                 <em style={{ color: TEAL, fontStyle: "italic" }}>are saying</em>
               </h2>
-            </div>
+                  </div>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               {starRow(5, 20)}
               <span style={{ fontSize: 13, color: "#AAA", marginLeft: 8 }}>5.0 average</span>
-            </div>
-          </div>
-
-          <div className="col-1-sm" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
-            {TESTI.map((t, i) => (
-              <div key={i} className="card-hover" style={{ ...cardBase({ padding: "32px 28px", overflow: "hidden", position: "relative" }), cursor: "default" }}>
-                <div style={{ position: "absolute", top: 16, right: 20, fontFamily: "'Cormorant Garamond',serif", fontSize: 72, color: t.c, opacity: .07, lineHeight: 1, pointerEvents: "none", userSelect: "none" }}>&ldquo;</div>
-                {starRow(5, 13)}
-                <p style={{ fontSize: 14, color: "#666", lineHeight: 1.88, fontStyle: "italic", margin: "16px 0 24px", position: "relative", zIndex: 1 }}>
-                  &ldquo;{t.q}&rdquo;
-                </p>
-                <div style={{ display: "flex", alignItems: "center", gap: 14, borderTop: "1px solid rgba(30,26,24,.07)", paddingTop: 20 }}>
-                  <div style={{ position: "relative", width: 46, height: 46, borderRadius: "50%", overflow: "hidden", border: `2px solid ${t.c}50`, flexShrink: 0 }}>
-                    <Image src={t.img} alt={t.name} fill style={{ objectFit: "cover", borderRadius: "50%" }} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: INK }}>{t.name}</div>
-                    <div style={{ fontSize: 11, color: "#AAA", marginTop: 2, letterSpacing: ".02em" }}>{t.role}</div>
-                  </div>
                 </div>
               </div>
+
+          <div className="testimonial-grid">
+            {TESTI.map((t, i) => (
+              <TestimonialCard key={`${t.name}-${i}`} t={t} starRow={starRow} cardBase={cardBase} INK={INK} />
             ))}
           </div>
         </div>
@@ -764,12 +890,11 @@ export default function Page() {
           <div style={{ textAlign: "center", marginBottom: 72 }}>
             <div style={{ ...eyebrow(), textAlign: "center" }}>Get In Touch</div>
             <h2 style={{ ...displayTitle({ textAlign: "center", marginBottom: 14 }) }}>
-              Let&apos;s simplify your{" "}
-              <em style={{ color: ROSE, fontStyle: "italic" }}>books together</em>
+              Ready to Make Sense of{" "}
+              <em style={{ color: ROSE, fontStyle: "italic" }}>YOUR Cents</em>?
             </h2>
             <p style={{ ...body({ textAlign: "center" }), maxWidth: 460, margin: "0 auto" }}>
-              Ready to go from chaos to calm? No jargon, no pressure —
-              just a friendly conversation about your finances.
+              Let me help you grow that money tree.
             </p>
           </div>
 
@@ -779,7 +904,7 @@ export default function Page() {
             {/* LEFT — photo + contact info */}
             <div style={{ paddingRight: 56, display: "flex", flexDirection: "column", gap: 20 }}>
 
-              {/* Photo card */}
+            {/* Photo card */}
               <div style={{
                 position: "relative", borderRadius: 28, overflow: "hidden",
                 boxShadow: `0 32px 80px rgba(30,26,24,.12), 0 0 0 1px rgba(192,85,106,.12)`,
@@ -810,15 +935,15 @@ export default function Page() {
                 <div style={{ position: "absolute", bottom: 22, left: 22, color: "white" }}>
                   <div style={{ fontSize: 16, fontWeight: 600, letterSpacing: ".02em", marginBottom: 3 }}>Kimberlie Gerstner</div>
                   <div style={{ fontSize: 12, opacity: .8, letterSpacing: ".03em" }}>Certified Bookkeeper · 30+ Years Experience</div>
-                </div>
               </div>
+            </div>
 
               {/* Contact info rows */}
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {[
                   { icon: Mail, label: "Email", val: "kimberlie@booksbykimberlie.com", c: ROSE, href: "mailto:kimberlie@booksbykimberlie.com" },
-                  { icon: Phone, label: "Mobile", val: "830-515-9818", c: TEAL, href: "tel:8305159818" },
                   { icon: Phone, label: "Office", val: "830-730-4160", c: GOLD, href: "tel:8307304160" },
+                  { icon: Phone, label: "Mobile", val: "830-515-9818", c: TEAL, href: "tel:8305159818" },
                   { icon: MessageCircle, label: "WhatsApp", val: "Available", c: PLUM, href: "#contact" },
                 ].map(d => (
                   <a key={d.label} href={d.href} style={{
@@ -837,16 +962,16 @@ export default function Page() {
                       display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                     }}>
                       <d.icon size={16} color={d.c} />
-                    </div>
+                  </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 10, fontWeight: 600, color: "#BBB", letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 2 }}>{d.label}</div>
                       <div style={{ fontSize: 13, fontWeight: 500, color: INK }}>{d.val}</div>
-                    </div>
+                  </div>
                     <ArrowRight size={13} color={d.c} style={{ opacity: .4 }} />
                   </a>
-                ))}
-              </div>
+              ))}
             </div>
+          </div>
 
             {/* VERTICAL DIVIDER */}
             <div style={{ background: `linear-gradient(to bottom, transparent, rgba(192,85,106,.18), transparent)` }} />
@@ -865,21 +990,22 @@ export default function Page() {
                 }}>
                   <div style={{ width: 80, height: 80, borderRadius: "50%", background: `${ROSE}10`, border: `2px solid ${ROSE}28`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
                     <CheckCircle2 size={38} color={ROSE} />
-                  </div>
+                </div>
                   <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 30, fontWeight: 400, color: INK, marginBottom: 12 }}>Message sent!</h3>
                   <p style={{ ...body({ fontSize: 14 }), maxWidth: 300, margin: "0 auto 28px" }}>
                     Thanks for reaching out. I&apos;ll be in touch within one business day.
                   </p>
                   <div style={{ background: MIST, borderRadius: 16, padding: "18px 24px", fontSize: 13, color: "#666", display: "flex", flexDirection: "column", gap: 10, marginBottom: 8, width: "100%" }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "center" }}><Phone size={13} color={ROSE} /> 830-515-9818</span>
+                    <span style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "center" }}><Phone size={13} color={ROSE} /> 830-730-4160 <span style={{ opacity: 0.75, fontSize: 11 }}>(office)</span></span>
+                    <span style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "center" }}><Phone size={13} color={TEAL} /> 830-515-9818 <span style={{ opacity: 0.75, fontSize: 11 }}>(mobile)</span></span>
                     <span style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "center" }}><Mail size={13} color={ROSE} /> kimberlie@booksbykimberlie.com</span>
-                  </div>
+                </div>
                   <button onClick={() => { setSent(false); setFormErr(null); }} className="btn-hover"
                     style={primaryBtn({ width: "100%", justifyContent: "center", marginTop: 16, borderRadius: 16 }) as React.CSSProperties}>
-                    Send Another Message
-                  </button>
-                </div>
-              ) : (
+                  Send Another Message
+                </button>
+              </div>
+            ) : (
                 <div style={{
                   background: "white", borderRadius: 28,
                   border: "1px solid rgba(192,85,106,.1)",
@@ -897,8 +1023,8 @@ export default function Page() {
                   {formErr && (
                     <div style={{ background: "#FFF0F0", border: "1px solid #FFB3B3", borderRadius: 12, padding: "12px 16px", fontSize: 13, color: "#A8302C", display: "flex", gap: 8, marginBottom: 22 }}>
                       ⚠ {formErr}
-                    </div>
-                  )}
+                  </div>
+                )}
 
                   <form onSubmit={sendContact} noValidate style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
@@ -919,9 +1045,9 @@ export default function Page() {
                             onBlur={e => e.target.style.borderColor = fldErr[f.k] ? "#e74c3c" : "rgba(192,85,106,.2)"}
                           />
                           {fldErr[f.k] && <span style={{ fontSize: 11, color: "#e74c3c" }}>{fldErr[f.k]}</span>}
-                        </div>
+                  </div>
                       ))}
-                    </div>
+                </div>
 
                     {/* Message textarea */}
                     <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
@@ -936,7 +1062,7 @@ export default function Page() {
                         onBlur={e => e.target.style.borderColor = fldErr.message ? "#e74c3c" : "rgba(192,85,106,.2)"}
                       />
                       {fldErr.message && <span style={{ fontSize: 11, color: "#e74c3c" }}>{fldErr.message}</span>}
-                    </div>
+                </div>
 
                     {/* Submit button */}
                     <button
@@ -946,7 +1072,7 @@ export default function Page() {
                         ? <><span style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,.35)", borderTopColor: "white", borderRadius: "50%", animation: "spin .7s linear infinite", display: "inline-block", flexShrink: 0 }} /> Sending…</>
                         : <>Send Message <ArrowRight size={16} /></>
                       }
-                    </button>
+                </button>
 
                     {/* Trust indicators */}
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18, paddingTop: 2, flexWrap: "wrap" }}>
@@ -962,9 +1088,9 @@ export default function Page() {
                         <Clock size={12} color={GOLD} /> 1 business day
                       </span>
                     </div>
-                  </form>
+              </form>
                 </div>
-              )}
+            )}
             </div>
           </div>
         </div>
@@ -973,17 +1099,17 @@ export default function Page() {
       {/* ══════════ NEWSLETTER ══════════ */}
       <div style={{ background: `linear-gradient(135deg, #2A1A1E 0%, #1A2420 100%)`, padding: "60px 8%" }}>
         <div style={{ maxWidth: 1160, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>
-          <div>
+        <div>
             <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 300, color: "white", marginBottom: 6, letterSpacing: "-.01em" }}>
               Stay in the loop
             </h3>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,.5)" }}>Helpful bookkeeping tips, money wins &amp; cheerful updates.</p>
-          </div>
+        </div>
           {nlOk ? (
             <div style={{ display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,.85)", fontWeight: 500, fontSize: 14 }}>
               <CheckCircle2 size={18} color={TEAL} /> You&apos;re subscribed — thank you!
-            </div>
-          ) : (
+          </div>
+        ) : (
             <form onSubmit={sendNl} noValidate style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <div style={{ display: "flex", background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.14)", borderRadius: 50, padding: 5 }}>
                 <input type="email" placeholder="your@email.com" value={nlEmail}
@@ -993,11 +1119,11 @@ export default function Page() {
                 <button type="submit" disabled={nlBusy}
                   style={{ background: `linear-gradient(135deg, ${ROSE}, #D4756A)`, color: "white", border: "none", borderRadius: 50, padding: "10px 26px", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>
                   {nlBusy ? "Subscribing…" : "Subscribe"}
-                </button>
+            </button>
               </div>
               {nlErr && <p style={{ fontSize: 12, color: "rgba(255,255,255,.6)", paddingLeft: 8 }}>{nlErr}</p>}
-            </form>
-          )}
+          </form>
+        )}
         </div>
       </div>
 
@@ -1019,20 +1145,20 @@ export default function Page() {
                     onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.background = `${c}25`; }}
                     onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = `${c}14`; }}>
                     <Icon size={14} color={c} />
-                  </a>
-                ))}
-              </div>
+                </a>
+              ))}
             </div>
+          </div>
 
-            {[
+          {[
               { h: "Services", links: [{ l: "QuickBooks", href: "#services" }, { l: "Payroll", href: "#services" }, { l: "Financial Reports", href: "#services" }, { l: "Accounts Payable", href: "#services" }, { l: "Accounts Receivable", href: "#services" }, { l: "Payment Processing", href: "#services" }] },
               { h: "Company", links: [{ l: "About", href: "#about" }, { l: "How It Works", href: "#process" }, { l: "Reviews", href: "#testimonials" }, { l: "Contact", href: "#contact" }] },
-              { h: "Contact", links: [{ l: "kimberlie@booksbykimberlie.com", href: "mailto:kimberlie@booksbykimberlie.com" }, { l: "830-515-9818", href: "tel:8305159818" }, { l: "830-730-4160", href: "tel:8307304160" }, { l: "WhatsApp", href: "#contact" }] },
-            ].map(col => (
-              <div key={col.h}>
+              { h: "Contact", links: [{ l: "kimberlie@booksbykimberlie.com", href: "mailto:kimberlie@booksbykimberlie.com" }, { l: "830-730-4160", href: "tel:8307304160" }, { l: "830-515-9818", href: "tel:8305159818" }, { l: "WhatsApp", href: "#contact" }] },
+          ].map(col => (
+            <div key={col.h}>
                 <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".14em", textTransform: "uppercase", color: ROSE, marginBottom: 18 }}>{col.h}</div>
                 <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
-                  {col.links.map(l => (
+                {col.links.map(l => (
                     <li key={l.l}>
                       <a href={l.href} style={{ fontSize: 13, color: "rgba(255,255,255,.38)", textDecoration: "none", transition: "color .2s" }}
                         onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,.8)"}
@@ -1040,16 +1166,16 @@ export default function Page() {
                         {l.l}
                       </a>
                     </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
 
           <div style={{ borderTop: "1px solid rgba(255,255,255,.06)", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
             <span style={{ fontSize: 12, color: "rgba(255,255,255,.2)" }}>© {new Date().getFullYear()} Books by Kimberlie. All rights reserved.</span>
             <div style={{ display: "flex", gap: 24 }}>
-              {["Privacy Policy", "Terms of Service"].map(l => (
+            {["Privacy Policy", "Terms of Service"].map(l => (
                 <a key={l} href="#" style={{ fontSize: 12, color: "rgba(255,255,255,.2)", textDecoration: "none", transition: "color .2s" }}
                   onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,.55)"}
                   onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,.2)"}>

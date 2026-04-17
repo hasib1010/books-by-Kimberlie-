@@ -258,14 +258,14 @@ function buildAutoReplyEmail(
                    style="margin:28px 0;border-radius:10px;overflow:hidden;">
               <tr>
                 <td style="padding:14px 16px;background:#F5E6E2;border-bottom:1px solid #EDD5CF;">
-                  <p style="margin:0;font-size:13px;color:#A8402C;">📞 Mobile</p>
-                  <p style="margin:4px 0 0;font-size:15px;font-weight:600;color:#0D0D0D;">830-515-9818</p>
+                  <p style="margin:0;font-size:13px;color:#A8402C;">📞 Office</p>
+                  <p style="margin:4px 0 0;font-size:15px;font-weight:600;color:#0D0D0D;">830-730-4160</p>
                 </td>
               </tr>
               <tr>
                 <td style="padding:14px 16px;background:#F5E6E2;border-bottom:1px solid #EDD5CF;">
-                  <p style="margin:0;font-size:13px;color:#A8402C;">📞 Office</p>
-                  <p style="margin:4px 0 0;font-size:15px;font-weight:600;color:#0D0D0D;">830-730-4160</p>
+                  <p style="margin:0;font-size:13px;color:#A8402C;">📞 Mobile</p>
+                  <p style="margin:4px 0 0;font-size:15px;font-weight:600;color:#0D0D0D;">830-515-9818</p>
                 </td>
               </tr>
               <tr>
@@ -312,7 +312,7 @@ function buildAutoReplyEmail(
   </table>
 </body>
 </html>`,
-    text: `Hi ${name},\n\nThanks for reaching out! I'll get back to you quickly.\n\n📞 Mobile: 830-515-9818\n📞 Office: 830-730-4160\n✉️ kimberlie@booksbykimberlie.com\n\nWarm regards,\nKimberlie Gerstner\nBooks by Kimberlie`,
+    text: `Hi ${name},\n\nThanks for reaching out! I'll get back to you quickly.\n\n📞 Office: 830-730-4160\n📞 Mobile: 830-515-9818\n✉️ kimberlie@booksbykimberlie.com\n\nWarm regards,\nKimberlie Gerstner\nBooks by Kimberlie`,
   };
 }
 
