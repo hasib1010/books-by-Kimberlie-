@@ -2,6 +2,7 @@
 "use client";
 
 import { STEPS } from "@/app/data";
+import CoinRain from "./CoinRain";
 
 export default function Process() {
   return (
@@ -11,12 +12,18 @@ export default function Process() {
       style={{
         background: "linear-gradient(140deg, #FBF7F0 0%, #F7F0F3 100%)",
         zIndex: 5,
+        minHeight: 600, // guarantee the section has height for coins to fall through
       }}
     >
-      <div className="max-w-[1160px] mx-auto relative z-10">
+      {/* Coin rain — sits at zIndex 1, behind cards (which get zIndex 10 via relative z-10) */}
+      <CoinRain count={40} />
+
+      <div className="max-w-[1160px] mx-auto relative" style={{ zIndex: 10 }}>
         {/* Header */}
-        <div data-aos="fade-up" className="text-center mb-16">
-          <div className="eyebrow text-center" style={{ color: "var(--gold)" }}>The Process</div>
+        <div data-aos="fade-up" className="process-header-panel text-center mb-16">
+          <div className="eyebrow text-center" style={{ color: "var(--gold)" }}>
+            The Process
+          </div>
           <h2 className="display-title text-center" style={{ marginBottom: 14 }}>
             Simple from <em className="italic text-[var(--rose)]">start to finish</em>
           </h2>
@@ -42,9 +49,6 @@ export default function Process() {
   );
 }
 
-/* ─────────────────────────────────────
-   Single process step
-───────────────────────────────────── */
 function StepCard({
   step,
   index,
@@ -65,7 +69,6 @@ function StepCard({
         padding: "32px 24px",
       }}
     >
-      {/* Step number circle */}
       <div
         className="rounded-full text-white flex items-center justify-center font-display font-semibold mx-auto mb-5"
         style={{
@@ -79,7 +82,6 @@ function StepCard({
         {step.n}
       </div>
 
-      {/* Connector line (hidden on last card + mobile) */}
       {!isLast && (
         <div
           className="hide-sm absolute pointer-events-none"
