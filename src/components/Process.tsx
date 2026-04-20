@@ -22,7 +22,7 @@ export default function Process() {
         {/* Header */}
         <div data-aos="fade-up" className="process-header-panel text-center mb-16">
           <div className="eyebrow text-center" style={{ color: "var(--gold)" }}>
-            The Process
+            The Process.
           </div>
           <h2 className="display-title text-center" style={{ marginBottom: 14 }}>
             Simple from <em className="italic text-[var(--rose)]">start to finish</em>
