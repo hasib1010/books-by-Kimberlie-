@@ -11,14 +11,13 @@ export default function CoinRain({ count: _count }: CoinRainProps) {
     <div aria-hidden="true" className="coin-rain-layer">
       <video
         className="coin-rain-video"
+        src="/coin-rain.mp4"
         autoPlay
         loop
         muted
         playsInline
         preload="auto"
-      >
-        <source src="/coin%20rain.mp4" type="video/mp4" />
-      </video>
+      />
     </div>
   );
 }
