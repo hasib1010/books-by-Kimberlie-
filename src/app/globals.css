@@ -1,6 +1,256 @@
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+/* src/app/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
 
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
- 
+@import "aos/dist/aos.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────
+   Theme tokens
+───────────────────────────────────── */
+:root {
+  --rose: #C0556A;
+  --teal: #3A9E8F;
+  --gold: #B07D3A;
+  --plum: #7E6BA8;
+  --ivory: #FFFCF7;
+  --ink: #1E1A18;
+  --mist: #F7F3EE;
+  --rose-light: #D4756A;
+}
+
+/* ─────────────────────────────────────
+   Base styles
+───────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Jost', sans-serif;
+  color: var(--ink);
+  background: var(--ivory);
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────
+   Scrollbar + selection
+───────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(192, 85, 106, 0.25);
+  border-radius: 3px;
+}
+::selection {
+  background: rgba(192, 85, 106, 0.15);
+}
+
+/* ─────────────────────────────────────
+   Typography helpers
+───────────────────────────────────── */
+.font-display {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.font-body {
+  font-family: 'Jost', sans-serif;
+}
+
+/* ─────────────────────────────────────
+   Reusable component classes
+───────────────────────────────────── */
+
+/* Primary CTA button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: linear-gradient(135deg, var(--rose) 0%, var(--rose-light) 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 8px 32px rgba(192, 85, 106, 0.21);
+}
+
+.btn-primary:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+/* Outline button */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid rgba(30, 26, 24, 0.22);
+  border-radius: 50px;
+  padding: 13px 30px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Card base */
+.card-base {
+  background: white;
+  border-radius: 24px;
+  border: 1px solid rgba(192, 85, 106, 0.1);
+  box-shadow: 0 4px 32px rgba(30, 26, 24, 0.05);
+}
+
+/* Eyebrow label */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 14px;
+}
+
+/* Display title */
+.display-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 3.5vw, 52px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+/* Body text */
+.body-text {
+  font-size: 15px;
+  color: #6B6461;
+  line-height: 1.9;
+}
+
+/* Form input */
+.form-input {
+  width: 100%;
+  background: #FDFAF7;
+  border: 1.5px solid rgba(192, 85, 106, 0.2);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  font-family: 'Jost', sans-serif;
+}
+
+.form-input.is-error {
+  border-color: #e74c3c;
+}
+
+/* ─────────────────────────────────────
+   Section layout
+───────────────────────────────────── */
+.section-pad {
+  padding: 108px 8%;
+}
+
+/* Testimonial grid */
+.testimonial-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  .testimonial-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Industry grid */
+.industry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+@media (max-width: 900px) {
+  .industry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Service card media area */
+.service-card-media {
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+.service-card-media img {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  object-fit: contain;
+}
+
+/* ─────────────────────────────────────
+   Responsive helpers
+───────────────────────────────────── */
+@media (max-width: 768px) {
+  .hide-sm {
+    display: none !important;
+  }
+  .show-sm {
+    display: flex !important;
+  }
+  .col-1-sm {
+    grid-template-columns: 1fr !important;
+  }
+  .col-2-sm {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .col-3-sm {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .section-pad {
+    padding: 72px 6%;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    min-height: 100dvh !important;
+    padding-top: 0 !important;
+  }
+  .hero-left {
+    padding: 96px 6% 52px !important;
+  }
+  .hero-h1 {
+    font-size: clamp(38px, 9vw, 56px) !important;
+  }
+  .nav-logo-img {
+    height: 130px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .col-2-sm,
+  .col-3-sm {
+    grid-template-columns: 1fr !important;
+  }
+}
