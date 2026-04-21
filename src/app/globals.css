@@ -283,8 +283,8 @@ body {
   margin-inline: auto;
   padding: 22px 28px;
   border-radius: 28px;
-  background: rgba(251, 247, 240, 0.78);
-  backdrop-filter: blur(14px);
+  color: black;
+  backdrop-filter: blur(4px);
   box-shadow: 0 18px 48px rgba(87, 67, 39, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.45);
 }
