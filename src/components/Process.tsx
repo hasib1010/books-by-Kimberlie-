@@ -64,7 +64,7 @@ function StepCard({
       className="rounded-[24px] text-center relative h-full"
       style={{
       
-        backdropFilter: "blur(3px)",
+        backdropFilter: "blur(6px)",
         border: `1px solid ${step.c}22`,
         padding: "32px 24px",
       }}
