@@ -107,7 +107,7 @@ function AboutBio() {
         wire transfers and international reconciliations.
       </p>
       <p className="body-text mb-[22px]">
-        I started Books by Kimberlie because I saw business owners drowning in receipts, bank feeds, and QuickBooks
+        I started Books by Kimberlie because I saw business owners drowning in receipts, bank transactions, and Quickbook's 
         headaches while trying to run their real work. My mission is simple: deliver clear financial control so you
         can focus on your projects, customers, and growth instead of spreadsheets.
       </p>
